@@ -1,0 +1,158 @@
+// Base styles.
+@import "base/index.less";
+
+// Colors and fonts.
+@paper: #f5f1eb;
+@wine: #6c2033;
+@accent: #85283d;
+@ink: #302e2b;
+@rule: #e3dbd2;
+@serif: Georgia, "Times New Roman", serif;
+@sans: Arial, Helvetica, sans-serif;
+
+// Base style overrides.
+@bg: @paper;
+@bg-base: @wine;
+@primary: @accent;
+@font: @sans;
+@font-heading: @serif;
+@font-site-title: @serif;
+
+.encounters_theme {
+    background: @paper;
+    color: @ink;
+    font-family: @sans;
+
+    a:focus-visible, button:focus-visible, summary:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 4px;
+    }
+
+    .pkp_structure_head { background: @paper; border: 0; color: @ink; }
+    .pkp_head_wrapper {
+        width: 100%; max-width: 1280px; margin: auto; padding: 24px 32px;
+    }
+    .pkp_site_name_wrapper { width: 100%; padding: 0; }
+    .pkp_site_name { color: @accent; white-space: normal; }
+    .pkp_site_name .is_text {
+        color: @accent; font-family: @serif; font-size: 34px; line-height: 1.15;
+    }
+    .encounters-tagline {
+        display: block; margin-top: 8px; color: @accent;
+        font-size: 9px; line-height: 1.5; text-transform: uppercase;
+    }
+    .pkp_site_nav_menu { background: @paper; }
+    .pkp_navigation_primary > li > a, .pkp_navigation_user > li > a {
+        color: @ink; font-size: 14px;
+    }
+    .pkp_navigation_user > li > a { color: @accent; }
+    .pkp_navigation_primary > li > a:hover,
+    .pkp_navigation_primary > li > a:focus { color: @accent; }
+    .pkp_site_nav_toggle { color: @accent; }
+    .pkp_site_nav_toggle::before, .pkp_site_nav_toggle::after { background: @accent; }
+    .encounters-search { display: inline-block; padding: 10px; color: @ink; }
+
+    .encounters-language {
+        position: relative; width: fit-content; margin-bottom: 28px;
+        font-size: 11px; line-height: 1.5; z-index: 10000;
+        summary { cursor: pointer; padding: 3px 9px; border: 1px solid @rule; border-radius: 3px; }
+        ul { position: absolute; margin: 4px 0 0; padding: 8px 12px; background: @paper; border: 1px solid @rule; list-style: none; min-width: 130px; }
+        a { display: block; padding: 5px 0; }
+    }
+
+    .pkp_structure_main::before, .pkp_structure_main::after { display: none; }
+    .pkp_structure_footer_wrapper { background: #e9e3db; border-top: 1px solid @rule; }
+    .pkp_structure_footer { padding-top: 45px; padding-bottom: 45px; }
+
+    .encounters-container { width: 100%; max-width: 1280px; margin: auto; padding-left: 48px; padding-right: 48px; }
+    .encounters-hero { background: @wine; color: @paper; }
+    .encounters-hero-grid { display: grid; grid-template-columns: 5fr 6fr; gap: 48px; align-items: center; padding-top: 56px; padding-bottom: 56px; }
+    .encounters-hero-grid--text { grid-template-columns: 1fr; }
+    .encounters-hero-image { display: block; width: 100%; height: auto; }
+    .encounters-hero-copy {
+        min-width: 0; font-family: @serif; font-size: 16px; line-height: 1.5;
+        h2, h3 { color: inherit; font-family: @serif; font-weight: normal; line-height: 1.5; margin: 0 0 12px; }
+        p { line-height: 1.5; margin: 0 0 12px; }
+        a { color: inherit; }
+    }
+    .encounters-description { overflow-wrap: anywhere; }
+    .encounters-button { display: inline-block; margin-top: 24px; padding: 9px 18px; border: 1px solid currentColor; border-radius: 4px; color: inherit; font-family: @serif; font-size: 14px; text-decoration: none; }
+    .encounters-button:hover { color: @wine; background: @paper; }
+    .encounters-recent { padding-top: 56px; padding-bottom: 56px; }
+    .encounters-section-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; padding-bottom: 16px; margin-bottom: 32px; border-bottom: 1px solid @rule; }
+    .encounters-section-heading h2 { margin: 0; color: @accent; font: normal 28px/1.3 @serif; }
+    .encounters-section-heading a { flex-shrink: 0; color: @ink; font-size: 14px; }
+    .encounters-issue-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+    .encounters-issue-card {
+        min-width: 0;
+        a { display: block; color: @ink; text-decoration: none; }
+        a:hover h3 { text-decoration: underline; }
+        img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: contain; background: #e9e3db; }
+        h3 { margin: 18px 0 0; font: normal 18px/1.4 @serif; text-align: center; overflow-wrap: anywhere; }
+    }
+    .encounters-cover-fallback { display: flex; align-items: center; justify-content: center; aspect-ratio: 3 / 2; padding: 20px; border: 1px solid @rule; background: #e9e3db; color: @accent; text-align: center; font: 22px/1.4 @serif; overflow-wrap: anywhere; }
+    .encounters-existing-content { padding-top: 32px; padding-bottom: 32px; }
+
+    .encounters-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px; }
+    .encounters-highlights img { max-width: 100%; height: auto; }
+    .pkp_site_nav_toggle > span { border-color: @accent; }
+    .pkp_site_nav_toggle > span::before, .pkp_site_nav_toggle > span::after { background: @accent; }
+    .pkp_site_nav_toggle[hidden], .pkp_site_nav_menu [hidden] { display: none !important; }
+    .pkp_site_nav_menu { display: block; }
+    .pkp_site_nav_menu a { color: @ink; }
+    .pkp_site_nav_menu a:hover, .pkp_site_nav_menu a:focus { color: @accent; }
+    .pkp_site_nav_menu .pkp_nav_list ul { position: static; left: auto; right: auto; }
+    .encounters-header:not(.encounters-navigation-ready) .pkp_site_nav_menu { position: static; }
+    .encounters-submenu-toggle { border: 0; background: transparent; color: @accent; cursor: pointer; padding: 10px; }
+}
+
+// Full-width journal homepage.
+.encounters_theme.pkp_page_index.pkp_op_index {
+    .pkp_structure_content { width: 100%; max-width: none; margin: 0; padding: 0; }
+    .pkp_structure_main { width: 100%; margin: 0; padding: 0; }
+}
+
+@media (min-width: 992px) {
+    .encounters_theme {
+        .pkp_head_wrapper { display: flex; flex-wrap: wrap; align-items: flex-end; column-gap: 24px; }
+        .encounters-language { margin-right: 100%; flex-shrink: 0; }
+        .pkp_site_name_wrapper { flex: 0 1 265px; margin: 0; height: auto; }
+        .pkp_site_name { position: static; margin: 0; padding: 0; }
+        .pkp_site_name > a { padding: 0; }
+        .pkp_site_nav_menu { display: flex; flex: 1 1 580px; justify-content: flex-end; align-items: center; gap: 8px; position: static; padding: 0; width: auto; }
+        .pkp_navigation_primary_row { display: block; }
+        .pkp_navigation_primary_wrapper { display: flex; align-items: center; width: auto; margin: 0; }
+        .pkp_navigation_primary { display: flex; flex-wrap: wrap; }
+        .pkp_navigation_primary > li > a { margin: 0; padding: 10px 7px; border-bottom: 0; }
+        .pkp_navigation_user_wrapper { position: static; width: auto; }
+        .pkp_navigation_user { display: flex; flex-wrap: wrap; width: auto; margin: 0; padding: 0; text-align: start; }
+        .pkp_navigation_user > li > a { padding: 10px 7px; }
+        .encounters-navigation-ready .pkp_nav_list ul { position: absolute; left: 0; top: 100%; padding: 8px; }
+        .encounters-navigation-ready .pkp_navigation_user ul { left: auto; right: 0; }
+    }
+}
+
+@media (max-width: 991px) {
+    .encounters_theme {
+        .pkp_site_name_wrapper { min-height: 72px; height: auto; }
+        .pkp_site_name { position: relative; inset: auto; margin-left: 48px; padding: 0; }
+        .pkp_site_name .is_text { line-height: 1.15; }
+        .encounters-tagline { max-width: 260px; }
+        .pkp_site_nav_menu { border-top: 1px solid @rule; box-shadow: 0 6px 12px #0001; }
+        .encounters-navigation-ready .pkp_site_nav_menu:not(.pkp_site_nav_menu--isOpen) { display: none; }
+        .pkp_navigation_primary > li { margin-bottom: 8px; }
+    }
+}
+
+@media (max-width: 640px) {
+    .encounters_theme {
+        .pkp_head_wrapper { padding: 20px; }
+        .pkp_site_name .is_text { font-size: 28px; }
+        .encounters-container { padding-left: 24px; padding-right: 24px; }
+        .encounters-hero-grid { grid-template-columns: 1fr; gap: 28px; padding-top: 32px; padding-bottom: 32px; }
+        .encounters-issue-grid { grid-template-columns: 1fr; gap: 32px; }
+        .encounters-section-heading { flex-wrap: wrap; gap: 12px; }
+        .encounters-section-heading h2 { font-size: 26px; }
+        .encounters-recent { padding-top: 36px; padding-bottom: 36px; }
+    }
+}

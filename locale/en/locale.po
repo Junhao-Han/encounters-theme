@@ -1,0 +1,40 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Encounters 0.1.0\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "plugins.themes.encounters.name"
+msgstr "Encounters"
+
+msgid "plugins.themes.encounters.description"
+msgstr "A standalone theme for Encounters. Development preview: journal header, introduction and recent issues."
+
+msgid "plugins.themes.encounters.mastheadTitle"
+msgstr "Short journal name in the header"
+
+msgid "plugins.themes.encounters.mastheadTagline"
+msgstr "Journal subtitle in the header"
+
+msgid "plugins.themes.encounters.recentIssues"
+msgstr "Recent Issues"
+
+msgid "plugins.themes.encounters.menu"
+msgstr "Menu"
+
+msgid "plugins.themes.encounters.displayStats"
+msgstr "Article download statistics"
+
+msgid "plugins.themes.encounters.displayStats.none"
+msgstr "Hide statistics"
+
+msgid "plugins.themes.encounters.displayStats.bar"
+msgstr "Bar chart"
+
+msgid "plugins.themes.encounters.displayStats.line"
+msgstr "Line chart"
+
+msgid "plugins.themes.encounters.submenu"
+msgstr "Show submenu: {$title}"
