@@ -90,6 +90,7 @@ class EncountersThemePlugin extends ThemePlugin
         }
 
         $context = Application::get()->getRequest()->getContext();
+        $templateManager->assign('encountersThemeUrl', $this->_getBaseUrl());
         $templateManager->assign('encountersLocales', $context?->getSupportedLocaleNames(LocaleMetadata::LANGUAGE_LOCALE_ONLY) ?? []);
         if ($template !== 'frontend/pages/indexJournal.tpl' || !$context) {
             return Hook::CONTINUE;

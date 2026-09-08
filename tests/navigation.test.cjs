@@ -58,6 +58,8 @@ class Element {
 function navigationFixture() {
     const document = new Element('document');
     const header = document.append(new Element('header', 'headerNavigationContainer'));
+    const language = header.append(new Element('details', '', ['encounters-language']));
+    const summary = language.append(new Element('summary'));
     const toggle = header.append(new Element('button', '', ['pkp_site_nav_toggle']));
     toggle.hidden = true;
     const menu = header.append(new Element('nav', 'encounters-navigation'));
@@ -74,8 +76,21 @@ function navigationFixture() {
         document,
         window: {matchMedia: () => desktop},
     });
-    return {document, header, toggle, menu, link, button, submenu, desktop};
+    return {document, header, language, summary, toggle, menu, link, button, submenu, desktop};
 }
+
+test('language menu closes on Escape and outside clicks', () => {
+    const {document, language, summary, toggle} = navigationFixture();
+    language.open = true;
+    document.emit('click', {target: summary});
+    assert.equal(language.open, true);
+    language.emit('keydown', {key: 'Escape'});
+    assert.equal(language.open, false);
+    assert.equal(summary.focused, true);
+    language.open = true;
+    document.emit('click', {target: toggle});
+    assert.equal(language.open, false);
+});
 
 test('mobile navigation toggles without parent scripts and Escape restores focus', () => {
     const {toggle, menu} = navigationFixture();

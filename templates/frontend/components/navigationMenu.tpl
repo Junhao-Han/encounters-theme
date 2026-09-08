@@ -17,7 +17,7 @@
                 </a>
                 {if $assignment->navigationMenuItem->getIsChildVisible()}
                     <button type="button" class="encounters-submenu-toggle" data-encounters-submenu aria-expanded="false" aria-controls="{$id|escape}-submenu-{$smarty.foreach.encountersMenu.iteration}" aria-label="{translate|escape key="plugins.themes.encounters.submenu" title=$assignment->navigationMenuItem->getLocalizedTitle()}" hidden>
-                        <span aria-hidden="true">&#9662;</span>
+                        <img src="{$encountersThemeUrl|escape}/images/menu-chevron.svg" width="8" height="8" alt="">
                     </button>
                     <ul id="{$id|escape}-submenu-{$smarty.foreach.encountersMenu.iteration}">
                         {foreach item=child from=$assignment->children}

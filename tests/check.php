@@ -23,6 +23,7 @@ check($xml->getElementsByTagName('application')[0]->textContent === 'encounters'
 
 // Use OJS's PHP LESS compiler, not only the npm compiler.
 $less = new Less_Parser();
+$less->parse('@baseUrl: "";');
 $less->parseFile($pluginRoot . '/styles/index.less');
 $css = $less->getCss();
 check(str_contains($css, '.encounters-issue-grid'), 'Homepage styles missing');
@@ -124,6 +125,7 @@ try {
         'currentJournal' => $journal, 'currentContext' => $journal,
         'activeTheme' => new FixtureTheme(), 'currentLocale' => 'en', 'currentLocaleLangDir' => 'ltr',
         'encountersLocales' => ['en' => 'English', 'fr' => 'Français'],
+        'encountersThemeUrl' => '/plugins/themes/encounters',
         'requestedPage' => 'index', 'requestedOp' => 'index',
         'displayPageHeaderLogo' => null, 'displayPageHeaderTitle' => $journal->getLocalizedName(),
         'siteTitle' => 'Test site', 'pageTitleTranslated' => '', 'pageTitle' => '',
@@ -219,7 +221,7 @@ try {
     check(!str_contains($navigation, '&lt;span'), 'Dashboard badge markup is displayed as text');
     check(str_contains($navigation, 'Dashboard &amp; &quot;tasks&quot; &lt;img src=x onerror=alert(1)&gt;'), 'Dashboard title is not escaped exactly once');
     check(str_contains($navigation, '&lt;script&gt;bad&lt;/script&gt; &amp; Custom'), 'Custom menu title is not escaped');
-    check(!str_contains($navigation, '<img') && !str_contains($navigation, '<script'), 'Menu title injected an HTML element');
+    check(!preg_match('/<img\b[^>]*\bonerror\s*=/i', $navigation) && !str_contains($navigation, '<script'), 'Menu title injected an HTML element');
     check(str_contains($navigation, 'aria-label="Show submenu: Dashboard &amp; &quot;tasks&quot; &lt;img src=x onerror=alert(1)&gt;"'), 'Dashboard submenu label includes markup or incorrect escaping');
 
     $result = 'unchanged';

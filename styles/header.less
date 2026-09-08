@@ -1,0 +1,333 @@
+.encounters_theme .encounters-header {
+    background: #f5f0ea;
+    border-bottom: 1px solid #d9d4cc;
+    color: #2b2825;
+    font-family: Inter, Arial, sans-serif;
+
+    .pkp_head_wrapper {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        width: 100%;
+        max-width: 1440px;
+        margin: auto;
+        padding: 24px 32px;
+    }
+
+    .encounters-topbar { min-height: 22px; }
+
+    .encounters-language {
+        position: relative;
+        width: fit-content;
+        z-index: 10001;
+
+        summary {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border: 1px solid #d9d4cc;
+            border-radius: 4px;
+            color: #6e6861;
+            font: 600 11px/12px Geist, Inter, Arial, sans-serif;
+            text-transform: uppercase;
+            list-style: none;
+            cursor: pointer;
+
+            &::-webkit-details-marker { display: none; }
+        }
+
+        ul {
+            position: absolute;
+            top: 100%;
+            inset-inline-start: 0;
+            min-width: 140px;
+            margin: 6px 0 0;
+            padding: 6px;
+            border: 1px solid #d9d4cc;
+            border-radius: 4px;
+            background: #f5f0ea;
+            list-style: none;
+        }
+
+        a {
+            display: block;
+            padding: 8px;
+            color: #2b2825;
+            font-size: 13px;
+            line-height: 20px;
+            text-decoration: none;
+
+            &:hover, &[aria-current] { background: #e8e2da; }
+        }
+    }
+
+    .encounters-branding-nav {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 24px 40px;
+    }
+
+    .pkp_site_name_wrapper {
+        flex: 0 0 auto;
+        width: auto;
+        max-width: 100%;
+        height: auto;
+        margin: 0;
+        padding: 0;
+    }
+
+    .pkp_site_name {
+        position: static;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        width: auto;
+        margin: 0;
+        padding: 0;
+        overflow: visible;
+        white-space: normal;
+        text-align: start;
+
+        > a { margin: 0; padding: 0; }
+
+        .is_text {
+            color: #7a2638;
+            font: 700 38px/46px "Cormorant Garamond", Georgia, serif;
+            overflow-wrap: anywhere;
+        }
+
+        .is_img img {
+            width: auto;
+            height: auto;
+            max-width: ~"min(280px, 100%)";
+            max-height: 80px;
+        }
+    }
+
+    .encounters-tagline {
+        display: block;
+        max-width: 280px;
+        color: #6c2336;
+        font: 500 9px/16px Inter, Arial, sans-serif;
+        text-transform: uppercase;
+        overflow-wrap: anywhere;
+    }
+
+    .pkp_site_nav_menu {
+        position: static;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 16px;
+        width: auto;
+        min-width: 0;
+        padding: 0;
+        background: transparent;
+        font: 500 13px/16px Inter, Arial, sans-serif;
+    }
+
+    .pkp_navigation_primary_row { min-width: 0; }
+
+    #siteNav { position: absolute; }
+
+    .pkp_navigation_primary_wrapper {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        width: auto;
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .pkp_head_wrapper,
+    .pkp_site_name_wrapper,
+    .pkp_navigation_primary_wrapper,
+    .pkp_nav_list {
+        &::before, &::after { display: none; }
+    }
+
+    .pkp_nav_list {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 16px;
+        width: auto;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        list-style: none;
+        text-align: start;
+
+        > li {
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        a {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: #2b2825;
+            font: inherit;
+            text-decoration: none;
+            overflow-wrap: anywhere;
+
+            &:hover { color: #7a2638; text-decoration: underline; }
+        }
+
+        ul {
+            position: static;
+            left: auto;
+            right: auto;
+            z-index: 1000;
+            flex-basis: 100%;
+            width: 15rem;
+            max-width: 100%;
+            margin: 0;
+            padding: 6px;
+            border: 1px solid #d9d4cc;
+            border-radius: 4px;
+            background: #f5f0ea;
+            box-shadow: 0 4px 12px #0001;
+            list-style: none;
+            transform: none;
+            will-change: auto;
+
+            a {
+                display: block;
+                margin: 0;
+                padding: 8px 10px;
+                border: 0;
+                line-height: 20px;
+
+                &:hover { background: #e8e2da; }
+            }
+        }
+    }
+
+    .pkp_navigation_user_wrapper {
+        position: static;
+        flex-shrink: 0;
+        margin: 0;
+        padding: 0;
+        padding-inline-start: 16px;
+        border-inline-start: 1px solid #d9d4cc;
+        transform: none;
+    }
+
+    .pkp_navigation_user > li > a {
+        color: #7a2638;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .pkp_navigation_user .task_count {
+        display: inline-block;
+        width: auto;
+        min-width: 18px;
+        height: 18px;
+        margin-inline-start: 4px;
+        padding: 0 3px;
+        background: #7a2638;
+        color: #fff;
+        font: 500 11px/18px Inter, Arial, sans-serif;
+    }
+
+    .encounters-submenu-toggle, .encounters-search {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        margin: -4px;
+        padding: 4px;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    img { display: block; flex-shrink: 0; }
+
+    .pkp_site_nav_toggle {
+        position: static;
+        display: none;
+        flex-shrink: 0;
+        width: auto;
+        height: auto;
+        min-height: 40px;
+        margin-inline-start: auto;
+        padding: 8px 14px;
+        border: 1px solid #d9d4cc;
+        border-radius: 4px;
+        background: transparent;
+        color: #7a2638;
+        font: 600 13px/16px Inter, Arial, sans-serif;
+        box-shadow: none;
+    }
+
+    a:focus-visible, button:focus-visible, summary:focus-visible {
+        outline: 2px solid #7a2638;
+        outline-offset: 4px;
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (min-width: 901px) {
+        &.encounters-navigation-ready .pkp_nav_list ul {
+            position: absolute;
+            top: calc(100% + 8px);
+            inset-inline-start: 0;
+            max-width: ~"min(18rem, 85vw)";
+        }
+
+        &.encounters-navigation-ready .pkp_navigation_user ul {
+            inset-inline-start: auto;
+            inset-inline-end: 0;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .encounters-branding-nav { flex-wrap: wrap; gap: 20px; }
+        .pkp_site_name_wrapper { flex: 1; min-width: 0; }
+        .pkp_site_nav_toggle { display: inline-flex; }
+
+        .pkp_site_nav_menu {
+            flex-basis: 100%;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid #d9d4cc;
+        }
+
+        &.encounters-navigation-ready .pkp_site_nav_menu:not(.pkp_site_nav_menu--isOpen) { display: none; }
+
+        .pkp_navigation_primary_wrapper { align-items: flex-start; }
+        .pkp_navigation_primary { flex: 1; }
+        .pkp_nav_list { flex-direction: column; align-items: stretch; gap: 4px; }
+        .pkp_nav_list > li > a { padding: 10px 0; }
+        .pkp_nav_list ul { width: 100%; box-shadow: none; }
+        .encounters-search { margin-top: 6px; }
+        .encounters-submenu-toggle { min-width: 32px; min-height: 36px; }
+
+        .pkp_navigation_user_wrapper {
+            padding: 12px 0 0;
+            border-inline-start: 0;
+            border-top: 1px solid #d9d4cc;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .pkp_head_wrapper { padding: 20px 24px; }
+    }
+}
