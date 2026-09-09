@@ -45,7 +45,7 @@ class EncountersThemePlugin extends ThemePlugin
         ]);
 
         $this->addMenuArea(['primary', 'user']);
-        $this->addStyle('stylesheet', 'styles/index.less');
+        $this->addStyle($this->getStylesheetName(), 'styles/index.less');
 
         // Core frontend templates and other OJS plugins use these core assets.
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
@@ -61,6 +61,25 @@ class EncountersThemePlugin extends ThemePlugin
         ]);
         Hook::add('TemplateManager::display', $this->prepareTemplate(...));
         Hook::add('TemplateManager::fetch', $this->prepareDashboardMenuItem(...));
+    }
+
+    private function getStylesheetName(): string
+    {
+        $files = [];
+        $directory = new \RecursiveDirectoryIterator($this->_getBaseDir('styles'), \FilesystemIterator::SKIP_DOTS);
+        foreach (new \RecursiveIteratorIterator($directory) as $file) {
+            if ($file->isFile() && $file->getExtension() === 'less') {
+                $files[] = $file->getPathname();
+            }
+        }
+        sort($files, SORT_STRING);
+
+        // The name identifies both OJS's compiled cache and the browser's CSS URL.
+        $hash = hash_init('sha256');
+        foreach ($files as $file) {
+            hash_update_file($hash, $file);
+        }
+        return 'encounters-' . substr(hash_final($hash), 0, 12);
     }
 
     public function prepareDashboardMenuItem(string $hookName, array $args): bool
