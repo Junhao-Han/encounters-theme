@@ -49,6 +49,16 @@ class EncountersThemePlugin extends ThemePlugin
             'label' => __('plugins.themes.encounters.introductionDescription'),
             'default' => 'An international, interdisciplinary journal exploring the intersections of Education, Humanities, and Technology',
         ]);
+        $this->addOption('monographDescription', 'FieldTextarea', [
+            'label' => __('plugins.themes.encounters.monographDescription'),
+            'default' => "Supported by Queen's University Library, THE is an open access series exploring the history, philosophy, and sociology of education.",
+        ]);
+        $this->addOption('monographUrl', 'FieldText', [
+            'label' => __('plugins.themes.encounters.monographUrl'),
+            'description' => __('plugins.themes.encounters.monographUrl.description'),
+            'inputType' => 'url',
+            'default' => 'https://queens.scholarsportal.info/omp/index.php/qulp/index',
+        ]);
 
         // The core article template consults this option before rendering statistics.
         $this->addOption('displayStats', 'FieldOptions', [
@@ -179,6 +189,10 @@ class EncountersThemePlugin extends ThemePlugin
                 'date' => $publication->getData('datePublished'),
             ];
         }
+        $monographUrl = trim((string) $this->getOption('monographUrl'));
+        if (!filter_var($monographUrl, FILTER_VALIDATE_URL) || !in_array(strtolower((string) parse_url($monographUrl, PHP_URL_SCHEME)), ['http', 'https'], true)) {
+            $monographUrl = '';
+        }
         $templateManager->assign([
             'encountersHeroTitles' => $titles,
             'encountersHeroDescription' => trim((string) $this->getOption('introductionDescription')),
@@ -186,6 +200,10 @@ class EncountersThemePlugin extends ThemePlugin
             'encountersRecentIssues' => $recentIssues,
             'encountersShowIssues' => $showIssues,
             'encountersRecentArticles' => $recentArticles,
+            'encountersShowAnnouncements' => (bool) $context->getData('enableAnnouncements'),
+            'encountersAnnouncements' => $templateManager->getTemplateVars('announcements')?->all() ?? [],
+            'encountersMonographDescription' => trim((string) $this->getOption('monographDescription')),
+            'encountersMonographUrl' => $monographUrl,
         ]);
 
         return Hook::CONTINUE;

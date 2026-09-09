@@ -10,7 +10,7 @@ msgid "plugins.themes.encounters.name"
 msgstr "Encounters"
 
 msgid "plugins.themes.encounters.description"
-msgstr "A standalone theme for Encounters. Development preview: journal header, introduction and recent issues."
+msgstr "A standalone theme for the Encounters journal."
 
 msgid "plugins.themes.encounters.mastheadTitle"
 msgstr "Short journal name in the header"
@@ -59,3 +59,24 @@ msgstr "Forthcoming Articles"
 
 msgid "plugins.themes.encounters.noArticles"
 msgstr "Published articles will appear here."
+
+msgid "plugins.themes.encounters.announcementsIntro"
+msgstr "News and updates from the journal."
+
+msgid "plugins.themes.encounters.viewAnnouncements"
+msgstr "View Announcements"
+
+msgid "plugins.themes.encounters.monographSeries"
+msgstr "Monograph Series"
+
+msgid "plugins.themes.encounters.monographDescription"
+msgstr "Monograph Series description"
+
+msgid "plugins.themes.encounters.monographUrl"
+msgstr "Monograph Series website"
+
+msgid "plugins.themes.encounters.monographUrl.description"
+msgstr "Enter an http:// or https:// address. Leave empty to hide the card."
+
+msgid "plugins.themes.encounters.exploreSeries"
+msgstr "Explore the Series"

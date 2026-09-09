@@ -59,6 +59,15 @@ class FixtureTheme
     }
 }
 
+class FixtureAnnouncement
+{
+    public int $id = 17;
+    public function getLocalizedData(string $name): string
+    {
+        return $name === 'title' ? 'Call for papers & <script>bad</script>' : '<p>Send your <strong>proposal</strong>.</p>';
+    }
+}
+
 class FixtureIssue
 {
     public function __construct(private string $id, private string $title, private string $cover = '') {}
@@ -146,6 +155,9 @@ try {
             ['title' => 'Learning without a recorded date', 'path' => 42, 'date' => null],
         ],
         'dateFormatLong' => 'F j, Y',
+        'encountersShowAnnouncements' => true, 'encountersAnnouncements' => [new FixtureAnnouncement()],
+        'encountersMonographUrl' => 'https://example.org/series?a=1&b=2',
+        'encountersMonographDescription' => 'History & <script>bad</script>',
         'highlights' => new ArrayObject(), 'numAnnouncementsHomepage' => 0,
         'announcements' => [], 'additionalHomeContent' => '',
         'pageFooter' => '', 'baseUrl' => '', 'brandImage' => 'ojs.svg',
@@ -168,12 +180,18 @@ try {
     check(str_contains($html, '/article/view/teaching-and-learning') && str_contains($html, '/article/view/42'), 'Article links do not support URL paths and numeric IDs');
     check(str_contains($html, 'datetime="2026-09-09">September 9, 2026</time>'), 'Publication date is not formatted');
     check(substr_count($html, 'class="encounters-article-date"') === 1, 'A missing publication date leaves a date label');
+    check(str_contains($html, '/announcement/view/17'), 'Announcement does not link to its public page');
+    check(str_contains($html, 'Call for papers &amp; &lt;script&gt;bad&lt;/script&gt;'), 'Announcement title is not escaped');
+    check(str_contains($html, '<strong>proposal</strong>'), 'Announcement summary formatting is lost');
+    check(str_contains($html, 'https://example.org/series?a=1&amp;b=2'), 'Series URL is not escaped');
+    check(str_contains($html, 'History &amp; &lt;script&gt;bad&lt;/script&gt;'), 'Series description is not escaped');
 
     $smarty->assign([
         'homepageImage' => null, 'encountersCurrentIssue' => null,
         'encountersRecentIssues' => [], 'encountersLocales' => ['en' => 'English'],
         'encountersHeroTitles' => [], 'encountersHeroDescription' => '',
-        'encountersRecentArticles' => [],
+        'encountersRecentArticles' => [], 'encountersAnnouncements' => [],
+        'encountersShowAnnouncements' => false, 'encountersMonographUrl' => '',
     ]);
     $empty = $smarty->fetch('frontend/pages/indexJournal.tpl');
     check(!str_contains($empty, 'class="encounters-issue-card"'), 'Empty issue list shows fabricated cards');
@@ -184,9 +202,11 @@ try {
     check(!str_contains($empty, 'class="encounters-description"'), 'Empty journal description leaves an empty block');
     check(str_contains($empty, 'Published issues will appear here.'), 'Empty recent issues message is missing');
     check(str_contains($empty, 'Published articles will appear here.'), 'Empty recent articles message is missing');
-    $smarty->assign(['encountersShowIssues' => false]);
+    check(!str_contains($empty, 'class="encounters-news"'), 'Disabled announcements and series leave an empty news section');
+    $smarty->assign(['encountersShowIssues' => false, 'encountersShowAnnouncements' => true]);
     $noIssues = $smarty->fetch('frontend/pages/indexJournal.tpl');
     check(!str_contains($noIssues, 'id="encounters-recent-heading"'), 'Issues appear when journal publishing is disabled');
+    check(str_contains($noIssues, '/announcement/index'), 'Announcement fallback does not link to the announcements page');
 
     $logo = ['uploadName' => 'logo.png', 'width' => 200, 'height' => 100, 'altText' => 'Journal "logo" & <identity>'];
     $smarty->assign('displayPageHeaderLogo', $logo);
