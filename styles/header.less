@@ -100,12 +100,21 @@
         > a { margin: 0; padding: 0; }
 
         .is_text {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            max-width: 100%;
             color: #7a2638;
             font: 700 38px/46px "Cormorant Garamond", Georgia, serif;
+            text-decoration: none;
             overflow-wrap: anywhere;
 
             &:hover { color: @header-wine; }
         }
+
+        .encounters-brand-mark { width: 80px; height: auto; max-width: none; max-height: none; }
+        .encounters-brand-copy { display: block; min-width: 0; }
+        .encounters-brand-title { display: block; }
 
         .is_img img {
             width: auto;
@@ -342,6 +351,10 @@
 
     @media (max-width: 600px) {
         .pkp_head_wrapper { padding: 20px 24px; }
+        .encounters-branding-nav { column-gap: 12px; }
+        .pkp_site_name .is_text { gap: 10px; font-size: ~"clamp(22px, 7vw, 32px)"; line-height: 1.2; }
+        .pkp_site_name .encounters-brand-mark { width: 48px; }
+        .encounters-tagline { font-size: 10px; line-height: 14px; }
     }
 }
 

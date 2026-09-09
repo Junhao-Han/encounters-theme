@@ -39,12 +39,15 @@
                             {if $displayPageHeaderLogo}
                                 <img src="{$publicFilesDir}/{$displayPageHeaderLogo.uploadName|escape:"url"}" alt="{$displayPageHeaderLogo.altText|default:$displayPageHeaderTitle|default:$siteTitle|escape}" width="{$displayPageHeaderLogo.width|escape}" height="{$displayPageHeaderLogo.height|escape}">
                             {else}
-                                {$activeTheme->getOption('mastheadTitle')|default:$displayPageHeaderTitle|escape}
+                                <img class="encounters-brand-mark" src="{$encountersThemeUrl|escape}/images/encounters-logo.png" width="501" height="383" alt="">
+                                <span class="encounters-brand-copy">
+                                    <span class="encounters-brand-title">{$activeTheme->getOption('mastheadTitle')|default:$displayPageHeaderTitle|escape}</span>
+                                    {if $activeTheme->getOption('mastheadTagline')}
+                                        <span class="encounters-tagline">{$activeTheme->getOption('mastheadTagline')|escape}</span>
+                                    {/if}
+                                </span>
                             {/if}
                         </a>
-                        {if !$displayPageHeaderLogo && $activeTheme->getOption('mastheadTagline')}
-                            <span class="encounters-tagline">{$activeTheme->getOption('mastheadTagline')|escape}</span>
-                        {/if}
                     </div>
                 </div>
                 <button type="button" class="pkp_site_nav_toggle" aria-controls="encounters-navigation" aria-expanded="false" hidden>

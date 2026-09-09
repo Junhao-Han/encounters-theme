@@ -17,7 +17,7 @@ files = [root / name for name in (
 for directory, suffixes in {
     "templates": {".tpl"}, "styles": {".less"},
     "js": {".js"}, "locale": {".po"},
-    "images": {".svg"}, "fonts": {".woff2", ".txt"},
+    "images": {".svg", ".png"}, "fonts": {".woff2", ".txt"},
 }.items():
     files.extend(p for p in (root / directory).rglob("*") if p.suffix in suffixes)
 
