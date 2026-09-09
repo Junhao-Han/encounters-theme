@@ -127,3 +127,19 @@
         .encounters-more { min-height: 44px; }
     }
 }
+
+.encounters_theme {
+    .pkp_structure_footer_wrapper { background: #e8e2da; border-top: 1px solid #d9d4cc; }
+    .pkp_structure_footer { display: flex; align-items: flex-start; gap: 32px; width: 90%; max-width: 1200px; min-height: 196px; padding: 48px 0; }
+    .pkp_structure_footer::before, .pkp_structure_footer::after { display: none; }
+    .pkp_footer_content { flex: 1; min-width: 0; padding: 0; text-align: start; overflow-wrap: anywhere; }
+    .pkp_footer_content img { max-width: 100%; height: auto; }
+    .pkp_brand_footer { flex: 0 0 80px; margin-inline-start: auto; padding: 0; }
+    .pkp_brand_footer a { float: none; }
+    .pkp_brand_footer img { display: block; width: 80px; height: auto; }
+
+    @media (max-width: 600px) {
+        .pkp_structure_footer { flex-wrap: wrap; width: ~"calc(100% - 48px)"; min-height: 160px; padding: 32px 0; }
+        .pkp_footer_content { flex-basis: 100%; }
+    }
+}
