@@ -4,17 +4,30 @@
 
 <div class="encounters-home">
     {call_hook name="Templates::Index::journal"}
-    <section class="encounters-hero" aria-label="{translate|escape key="about.aboutContext"}">
-        <div class="encounters-container encounters-hero-grid{if !$homepageImage} encounters-hero-grid--text{/if}">
-            {if $homepageImage}
-                <img class="encounters-hero-image" src="{$publicFilesDir}/{$homepageImage.uploadName|escape:"url"}" alt="{$homepageImage.altText|default:''|escape}">
-            {/if}
-            <div class="encounters-hero-copy">
-                {if $journalDescription}
-                    <div class="encounters-description">{$journalDescription|strip_unsafe_html}</div>
-                {else}
-                    <h2>{$currentJournal->getLocalizedName()|escape}</h2>
+    <section class="encounters-hero" aria-labelledby="encounters-introduction-heading">
+        <div class="encounters-container encounters-hero-grid">
+            <div class="encounters-hero-media">
+                {if !empty($homepageImage.uploadName)}
+                    <img class="encounters-hero-image" src="{$publicFilesDir|escape}/{$homepageImage.uploadName|escape:"url"}" alt="{$homepageImage.altText|default:''|escape}"{if !empty($homepageImage.width) && !empty($homepageImage.height)} width="{$homepageImage.width|intval}" height="{$homepageImage.height|intval}"{/if}>
                 {/if}
+            </div>
+            <div class="encounters-hero-copy">
+                <div class="encounters-hero-text">
+                    <div class="encounters-hero-titles">
+                        {foreach from=$encountersHeroTitles key=titleLocale item=heroTitle name=heroTitles}
+                            {if $smarty.foreach.heroTitles.first}
+                                <h2 id="encounters-introduction-heading" lang="{$titleLocale|replace:'_':'-'|escape}" dir="auto">{$heroTitle|escape}</h2>
+                            {else}
+                                <p lang="{$titleLocale|replace:'_':'-'|escape}" dir="auto">{$heroTitle|escape}</p>
+                            {/if}
+                        {foreachelse}
+                            <h2 id="encounters-introduction-heading">{$currentJournal->getLocalizedName()|escape}</h2>
+                        {/foreach}
+                    </div>
+                    {if $encountersHeroDescription}
+                        <div class="encounters-description">{$encountersHeroDescription|escape|nl2br}</div>
+                    {/if}
+                </div>
                 {if $encountersCurrentIssue}
                     <a class="encounters-button" href="{url page="issue" op="view" path=$encountersCurrentIssue->getBestIssueId()}">{translate key="journal.currentIssue"}</a>
                 {/if}

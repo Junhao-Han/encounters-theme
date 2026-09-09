@@ -31,6 +31,22 @@ class EncountersThemePlugin extends ThemePlugin
             'label' => __('plugins.themes.encounters.mastheadTagline'),
             'default' => 'In Education, Humanities, and Technology',
         ]);
+        $this->addOption('introductionTitleEn', 'FieldText', [
+            'label' => __('plugins.themes.encounters.introductionTitleEn'),
+            'default' => 'Encounters in Education, Humanities, and Technology.',
+        ]);
+        $this->addOption('introductionTitleEs', 'FieldText', [
+            'label' => __('plugins.themes.encounters.introductionTitleEs'),
+            'default' => 'Encuentros en Educación, Humanidades y Tecnología',
+        ]);
+        $this->addOption('introductionTitleFr', 'FieldText', [
+            'label' => __('plugins.themes.encounters.introductionTitleFr'),
+            'default' => 'Rencontres en éducation, sciences humaines et technologie',
+        ]);
+        $this->addOption('introductionDescription', 'FieldTextarea', [
+            'label' => __('plugins.themes.encounters.introductionDescription'),
+            'default' => 'An international, interdisciplinary journal exploring the intersections of Education, Humanities, and Technology',
+        ]);
 
         // The core article template consults this option before rendering statistics.
         $this->addOption('displayStats', 'FieldOptions', [
@@ -115,6 +131,14 @@ class EncountersThemePlugin extends ThemePlugin
             return Hook::CONTINUE;
         }
 
+        $titles = [];
+        foreach (['en' => 'introductionTitleEn', 'es' => 'introductionTitleEs', 'fr' => 'introductionTitleFr'] as $locale => $option) {
+            $title = trim((string) $this->getOption($option));
+            if ($title !== '') {
+                $titles[$locale] = $title;
+            }
+        }
+
         $currentIssue = null;
         $recentIssues = [];
         if ($context->getData('publishingMode') != Journal::PUBLISHING_MODE_NONE) {
@@ -131,6 +155,8 @@ class EncountersThemePlugin extends ThemePlugin
                 ->all();
         }
         $templateManager->assign([
+            'encountersHeroTitles' => $titles,
+            'encountersHeroDescription' => trim((string) $this->getOption('introductionDescription')),
             'encountersCurrentIssue' => $currentIssue,
             'encountersRecentIssues' => $recentIssues,
         ]);

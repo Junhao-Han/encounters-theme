@@ -1,0 +1,104 @@
+.encounters_theme .encounters-hero {
+    background: #6b2033;
+    color: @paper;
+
+    .encounters-hero-grid {
+        display: flex;
+        align-items: center;
+        gap: 48px;
+        max-width: 960px;
+        min-height: 352px;
+        padding: 56px 48px;
+    }
+
+    .encounters-hero-media {
+        position: relative;
+        flex-shrink: 0;
+        width: 360px;
+        height: 240px;
+        overflow: hidden;
+    }
+
+    .encounters-hero-image {
+        position: absolute;
+        inset: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .encounters-hero-copy {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 24px;
+        min-width: 0;
+    }
+
+    .encounters-hero-text,
+    .encounters-hero-titles {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .encounters-hero-titles > * {
+        margin: 0;
+        color: inherit;
+        font: italic 400 22px/1.09 "Crimson Pro", Georgia, serif;
+        overflow-wrap: anywhere;
+    }
+
+    .encounters-description {
+        color: #fff;
+        font: 500 14px/1.6 Lora, Georgia, serif;
+        overflow-wrap: anywhere;
+
+        p { margin: 0 0 8px; line-height: inherit; }
+        > :first-child { margin-top: 0; }
+        > :last-child { margin-bottom: 0; }
+        a { color: inherit; text-decoration: underline; }
+        img { max-width: 100%; height: auto; }
+    }
+
+    .encounters-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 100%;
+        margin: 0;
+        padding: 9px 17px;
+        border: 1px solid @paper;
+        border-radius: 4px;
+        background: transparent;
+        color: @paper;
+        font: 600 13px/14px "Crimson Pro", Georgia, serif;
+        text-align: center;
+        text-decoration: none;
+        overflow-wrap: anywhere;
+
+        &:hover { background: @paper; color: #6b2033; }
+    }
+
+    @media (max-width: 1000px) {
+        .encounters-hero-titles > * { font-size: 21px; }
+    }
+
+    @media (max-width: 900px) {
+        .encounters-hero-grid { gap: 28px; padding: 40px 32px; }
+        .encounters-hero-media { width: 40%; height: auto; aspect-ratio: 3 / 2; }
+        .encounters-hero-titles > * { line-height: 1.2; }
+    }
+
+    @media (max-width: 600px) {
+        .encounters-hero-grid { flex-direction: column; align-items: stretch; min-height: 0; padding: 32px 24px; }
+        .encounters-hero-media { width: 100%; }
+        .encounters-hero-titles > * { font-size: 23px; }
+        .encounters-description { font-size: 16px; }
+        .encounters-button { min-height: 40px; }
+    }
+}

@@ -125,13 +125,18 @@ try {
         'currentJournal' => $journal, 'currentContext' => $journal,
         'activeTheme' => new FixtureTheme(), 'currentLocale' => 'en', 'currentLocaleLangDir' => 'ltr',
         'encountersLocales' => ['en' => 'English', 'fr' => 'Français'],
+        'encountersHeroTitles' => [
+            'en' => 'Encounters & Education',
+            'es' => 'Encuentros en Educación',
+            'fr' => 'Rencontres <script>bad</script>',
+        ],
         'encountersThemeUrl' => '/plugins/themes/encounters',
         'requestedPage' => 'index', 'requestedOp' => 'index',
         'displayPageHeaderLogo' => null, 'displayPageHeaderTitle' => $journal->getLocalizedName(),
         'siteTitle' => 'Test site', 'pageTitleTranslated' => '', 'pageTitle' => '',
         'publicFilesDir' => '/public/journals/1', 'hasSidebar' => false, 'isFullWidth' => false,
-        'homepageImage' => ['uploadName' => 'hero.jpg', 'altText' => 'Journal & campus'],
-        'journalDescription' => '<p>Journal introduction.</p>',
+        'homepageImage' => ['uploadName' => 'hero.jpg', 'altText' => 'Journal & campus', 'width' => 360, 'height' => 240],
+        'encountersHeroDescription' => "Education & Humanities\n<script>bad</script>",
         'encountersCurrentIssue' => $issue,
         'encountersRecentIssues' => [$issue, new FixtureIssue('vol-2', 'Issue II')],
         'highlights' => new ArrayObject(), 'numAnnouncementsHomepage' => 0,
@@ -147,16 +152,23 @@ try {
     check(str_contains($html, 'encounters-cover-fallback'), 'Missing-cover fallback is absent');
     check(str_contains($html, '/user/setLocale/fr'), 'Language route missing');
     check(str_contains($html, 'Recent Issues'), 'Theme translation not loaded');
+    check(str_contains($html, 'lang="es" dir="auto">Encuentros en Educación'), 'Translated introduction title or language is missing');
+    check(str_contains($html, 'Rencontres &lt;script&gt;bad&lt;/script&gt;'), 'Introduction title is not escaped');
+    check(str_contains($html, 'alt="Journal &amp; campus" width="360" height="240"'), 'Homepage image dimensions or alternative text are missing');
+    check(str_contains($html, "Education &amp; Humanities<br />\n&lt;script&gt;bad&lt;/script&gt;"), 'Introduction text is not escaped or line breaks are missing');
 
     $smarty->assign([
         'homepageImage' => null, 'encountersCurrentIssue' => null,
         'encountersRecentIssues' => [], 'encountersLocales' => ['en' => 'English'],
+        'encountersHeroTitles' => [], 'encountersHeroDescription' => '',
     ]);
     $empty = $smarty->fetch('frontend/pages/indexJournal.tpl');
     check(!str_contains($empty, 'class="encounters-issue-card"'), 'Empty issue list shows fabricated cards');
     check(!str_contains($empty, 'class="encounters-button"'), 'Current issue link shown without an issue');
     check(!str_contains($empty, '<details'), 'Single-language journal shows unnecessary language selector');
-    check(str_contains($empty, 'encounters-hero-grid--text'), 'Text-only introduction layout missing');
+    check(str_contains($empty, 'class="encounters-hero-media"') && !str_contains($empty, 'class="encounters-hero-image"'), 'Missing homepage image does not preserve an empty image area');
+    check(str_contains($empty, 'id="encounters-introduction-heading">Encounters &amp; Education'), 'Introduction title does not fall back to the journal name');
+    check(!str_contains($empty, 'class="encounters-description"'), 'Empty journal description leaves an empty block');
 
     $logo = ['uploadName' => 'logo.png', 'width' => 200, 'height' => 100, 'altText' => 'Journal "logo" & <identity>'];
     $smarty->assign('displayPageHeaderLogo', $logo);

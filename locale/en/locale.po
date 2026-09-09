@@ -18,6 +18,18 @@ msgstr "Short journal name in the header"
 msgid "plugins.themes.encounters.mastheadTagline"
 msgstr "Journal subtitle in the header"
 
+msgid "plugins.themes.encounters.introductionTitleEn"
+msgstr "Homepage journal name — English"
+
+msgid "plugins.themes.encounters.introductionTitleEs"
+msgstr "Homepage journal name — Spanish"
+
+msgid "plugins.themes.encounters.introductionTitleFr"
+msgstr "Homepage journal name — French"
+
+msgid "plugins.themes.encounters.introductionDescription"
+msgstr "Homepage introduction"
+
 msgid "plugins.themes.encounters.recentIssues"
 msgstr "Recent Issues"
 
