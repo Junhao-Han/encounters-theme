@@ -1,5 +1,8 @@
+@header-paper: #f5f0ea;
+@header-wine: #6b2033;
+
 .encounters_theme .encounters-header {
-    background: #f5f0ea;
+    background: @header-paper;
     border-bottom: 1px solid #d9d4cc;
     color: #2b2825;
     font-family: Inter, Arial, sans-serif;
@@ -8,11 +11,11 @@
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
-        gap: 24px;
+        gap: 6px;
         width: 100%;
         max-width: 1440px;
         margin: auto;
-        padding: 24px 32px;
+        padding: 16px 24px;
     }
 
     .encounters-topbar { min-height: 22px; }
@@ -35,6 +38,7 @@
             list-style: none;
             cursor: pointer;
 
+            &:hover { color: @header-wine; }
             &::-webkit-details-marker { display: none; }
         }
 
@@ -47,7 +51,7 @@
             padding: 6px;
             border: 1px solid #d9d4cc;
             border-radius: 4px;
-            background: #f5f0ea;
+            background: @header-paper;
             list-style: none;
         }
 
@@ -60,11 +64,13 @@
             text-decoration: none;
 
             &:hover, &[aria-current] { background: #e8e2da; }
+            &:hover { color: @header-wine; }
         }
     }
 
     .encounters-branding-nav {
         display: flex;
+        flex-wrap: wrap;
         align-items: flex-end;
         justify-content: space-between;
         gap: 24px 40px;
@@ -97,6 +103,8 @@
             color: #7a2638;
             font: 700 38px/46px "Cormorant Garamond", Georgia, serif;
             overflow-wrap: anywhere;
+
+            &:hover { color: @header-wine; }
         }
 
         .is_img img {
@@ -124,6 +132,8 @@
         gap: 16px;
         width: auto;
         min-width: 0;
+        max-width: 100%;
+        margin-inline-start: auto;
         padding: 0;
         background: transparent;
         font: 500 13px/16px Inter, Arial, sans-serif;
@@ -182,7 +192,7 @@
             text-decoration: none;
             overflow-wrap: anywhere;
 
-            &:hover { color: #7a2638; text-decoration: underline; }
+            &:hover { color: @header-wine; text-decoration: underline; }
         }
 
         ul {
@@ -197,7 +207,7 @@
             padding: 6px;
             border: 1px solid #d9d4cc;
             border-radius: 4px;
-            background: #f5f0ea;
+            background: @header-paper;
             box-shadow: 0 4px 12px #0001;
             list-style: none;
             transform: none;
@@ -273,6 +283,8 @@
         color: #7a2638;
         font: 600 13px/16px Inter, Arial, sans-serif;
         box-shadow: none;
+
+        &:hover { color: @header-wine; }
     }
 
     a:focus-visible, button:focus-visible, summary:focus-visible {
@@ -297,7 +309,7 @@
     }
 
     @media (max-width: 900px) {
-        .encounters-branding-nav { flex-wrap: wrap; gap: 20px; }
+        .encounters-branding-nav { gap: 20px; }
         .pkp_site_name_wrapper { flex: 1; min-width: 0; }
         .pkp_site_nav_toggle { display: inline-flex; }
 
@@ -329,5 +341,51 @@
 
     @media (max-width: 600px) {
         .pkp_head_wrapper { padding: 20px 24px; }
+    }
+}
+
+.encounters_theme:not(.pkp_page_index.pkp_op_index) .encounters-header {
+    background: @header-wine;
+    border-bottom-color: @header-wine;
+    color: @header-paper;
+
+    .pkp_site_name .is_text,
+    .encounters-tagline,
+    .pkp_navigation_primary > li > a,
+    .pkp_navigation_user > li > a,
+    .encounters-language summary,
+    .pkp_site_nav_toggle {
+        color: @header-paper;
+
+        &:hover { color: @header-paper; }
+        &:focus-visible { outline-color: @header-paper; }
+    }
+
+    .encounters-language summary,
+    .pkp_site_nav_toggle {
+        border-color: #b58a95;
+
+        &:hover { background: fade(@header-paper, 12%); }
+    }
+
+    .pkp_site_nav_menu,
+    .pkp_navigation_user_wrapper {
+        border-color: fade(@header-paper, 30%);
+    }
+
+    .encounters-search img,
+    .encounters-submenu-toggle img,
+    .encounters-language summary img {
+        filter: brightness(0) invert(1);
+    }
+
+    .encounters-search:focus-visible,
+    .encounters-submenu-toggle:focus-visible {
+        outline-color: @header-paper;
+    }
+
+    .pkp_navigation_user > li > a .task_count {
+        background: @header-paper;
+        color: @header-wine;
     }
 }
