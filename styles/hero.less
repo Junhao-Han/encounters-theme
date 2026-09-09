@@ -5,17 +5,18 @@
     .encounters-hero-grid {
         display: flex;
         align-items: center;
-        gap: 48px;
-        max-width: 960px;
+        gap: ~"clamp(24px, 3.3vw, 48px)";
+        width: 90%;
+        max-width: 1200px;
         min-height: 352px;
-        padding: 56px 48px;
+        padding: ~"clamp(32px, 3vw, 48px)" 0;
     }
 
     .encounters-hero-media {
         position: relative;
         flex-shrink: 0;
-        width: 360px;
-        height: 240px;
+        width: 42%;
+        aspect-ratio: 3 / 2;
         overflow: hidden;
     }
 
@@ -49,13 +50,15 @@
     .encounters-hero-titles > * {
         margin: 0;
         color: inherit;
-        font: italic 400 22px/1.09 "Crimson Pro", Georgia, serif;
+        font: italic 400 22px/1.2 "Crimson Pro", Georgia, serif;
+        font-size: ~"clamp(21px, 1.8vw, 26px)";
         overflow-wrap: anywhere;
     }
 
     .encounters-description {
         color: #fff;
         font: 500 14px/1.6 Lora, Georgia, serif;
+        font-size: ~"clamp(14px, 1.2vw, 16px)";
         overflow-wrap: anywhere;
 
         p { margin: 0 0 8px; line-height: inherit; }
@@ -84,18 +87,8 @@
         &:hover { background: @paper; color: #6b2033; }
     }
 
-    @media (max-width: 1000px) {
-        .encounters-hero-titles > * { font-size: 21px; }
-    }
-
-    @media (max-width: 900px) {
-        .encounters-hero-grid { gap: 28px; padding: 40px 32px; }
-        .encounters-hero-media { width: 40%; height: auto; aspect-ratio: 3 / 2; }
-        .encounters-hero-titles > * { line-height: 1.2; }
-    }
-
     @media (max-width: 600px) {
-        .encounters-hero-grid { flex-direction: column; align-items: stretch; min-height: 0; padding: 32px 24px; }
+        .encounters-hero-grid { flex-direction: column; align-items: stretch; width: ~"calc(100% - 48px)"; min-height: 0; padding: 32px 0; }
         .encounters-hero-media { width: 100%; }
         .encounters-hero-titles > * { font-size: 23px; }
         .encounters-description { font-size: 16px; }
