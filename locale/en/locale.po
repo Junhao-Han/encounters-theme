@@ -53,3 +53,9 @@ msgstr "Show submenu: {$title}"
 
 msgid "plugins.themes.encounters.noIssues"
 msgstr "Published issues will appear here."
+
+msgid "plugins.themes.encounters.recentArticles"
+msgstr "Forthcoming Articles"
+
+msgid "plugins.themes.encounters.noArticles"
+msgstr "Published articles will appear here."

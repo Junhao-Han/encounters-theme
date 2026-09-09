@@ -53,6 +53,28 @@
         </section>
     {/if}
 
+    <section class="encounters-recent-articles" aria-labelledby="encounters-articles-heading">
+        <div class="encounters-container">
+            <div class="encounters-section-heading">
+                <h2 id="encounters-articles-heading">{translate key="plugins.themes.encounters.recentArticles"}</h2>
+            </div>
+            {if $encountersRecentArticles}
+                <ul class="encounters-article-list">
+                    {foreach from=$encountersRecentArticles item=recentArticle}
+                        <li>
+                            <h3><a href="{url page="article" op="view" path=$recentArticle.path}">{$recentArticle.title|escape}</a></h3>
+                            {if $recentArticle.date}
+                                <time class="encounters-article-date" datetime="{$recentArticle.date|date_format:'Y-m-d'|escape}">{$recentArticle.date|date_format:$dateFormatLong|escape}</time>
+                            {/if}
+                        </li>
+                    {/foreach}
+                </ul>
+            {else}
+                <p class="encounters-empty">{translate key="plugins.themes.encounters.noArticles"}</p>
+            {/if}
+        </div>
+    </section>
+
     {if $highlights->count()}
         <div class="encounters-container encounters-existing-content">
             {include file="frontend/components/highlights.tpl" highlights=$highlights}

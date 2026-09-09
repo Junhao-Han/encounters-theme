@@ -116,6 +116,7 @@ try {
     $smarty->registerPlugin('function', 'load_script', static fn (): string => '');
     $smarty->registerPlugin('function', 'call_hook', static fn (): string => '');
     $smarty->registerPlugin('modifier', 'intval', intval(...));
+    $smarty->registerPlugin('modifier', 'date_format', static fn ($date, $format): string => (new \Carbon\Carbon($date))->locale('en')->translatedFormat($format));
     // OJS's sanitization is outside this fixture test; use trusted sample HTML.
     $smarty->registerPlugin('modifier', 'strip_unsafe_html', static fn (string $html): string => $html);
 
@@ -140,6 +141,11 @@ try {
         'encountersCurrentIssue' => $issue,
         'encountersRecentIssues' => [$issue, new FixtureIssue('vol-2', 'Issue II')],
         'encountersShowIssues' => true,
+        'encountersRecentArticles' => [
+            ['title' => 'Teaching & <script>bad</script>', 'path' => 'teaching-and-learning', 'date' => '2026-09-09'],
+            ['title' => 'Learning without a recorded date', 'path' => 42, 'date' => null],
+        ],
+        'dateFormatLong' => 'F j, Y',
         'highlights' => new ArrayObject(), 'numAnnouncementsHomepage' => 0,
         'announcements' => [], 'additionalHomeContent' => '',
         'pageFooter' => '', 'baseUrl' => '', 'brandImage' => 'ojs.svg',
@@ -157,11 +163,17 @@ try {
     check(str_contains($html, 'Rencontres &lt;script&gt;bad&lt;/script&gt;'), 'Introduction title is not escaped');
     check(str_contains($html, 'alt="Journal &amp; campus" width="360" height="240"'), 'Homepage image dimensions or alternative text are missing');
     check(str_contains($html, "Education &amp; Humanities<br />\n&lt;script&gt;bad&lt;/script&gt;"), 'Introduction text is not escaped or line breaks are missing');
+    check(str_contains($html, 'Forthcoming Articles'), 'Article section heading is missing');
+    check(str_contains($html, 'Teaching &amp; &lt;script&gt;bad&lt;/script&gt;'), 'Article title is not escaped');
+    check(str_contains($html, '/article/view/teaching-and-learning') && str_contains($html, '/article/view/42'), 'Article links do not support URL paths and numeric IDs');
+    check(str_contains($html, 'datetime="2026-09-09">September 9, 2026</time>'), 'Publication date is not formatted');
+    check(substr_count($html, 'class="encounters-article-date"') === 1, 'A missing publication date leaves a date label');
 
     $smarty->assign([
         'homepageImage' => null, 'encountersCurrentIssue' => null,
         'encountersRecentIssues' => [], 'encountersLocales' => ['en' => 'English'],
         'encountersHeroTitles' => [], 'encountersHeroDescription' => '',
+        'encountersRecentArticles' => [],
     ]);
     $empty = $smarty->fetch('frontend/pages/indexJournal.tpl');
     check(!str_contains($empty, 'class="encounters-issue-card"'), 'Empty issue list shows fabricated cards');
@@ -171,6 +183,7 @@ try {
     check(str_contains($empty, 'id="encounters-introduction-heading">Encounters &amp; Education'), 'Introduction title does not fall back to the journal name');
     check(!str_contains($empty, 'class="encounters-description"'), 'Empty journal description leaves an empty block');
     check(str_contains($empty, 'Published issues will appear here.'), 'Empty recent issues message is missing');
+    check(str_contains($empty, 'Published articles will appear here.'), 'Empty recent articles message is missing');
     $smarty->assign(['encountersShowIssues' => false]);
     $noIssues = $smarty->fetch('frontend/pages/indexJournal.tpl');
     check(!str_contains($noIssues, 'id="encounters-recent-heading"'), 'Issues appear when journal publishing is disabled');

@@ -12,6 +12,8 @@ use APP\core\Application;
 use APP\facades\Repo;
 use APP\issue\Collector;
 use APP\journal\Journal;
+use APP\submission\Collector as SubmissionCollector;
+use APP\submission\Submission;
 use APP\template\TemplateManager;
 use PKP\config\Config;
 use PKP\i18n\LocaleMetadata;
@@ -155,12 +157,35 @@ class EncountersThemePlugin extends ThemePlugin
                 ->getMany()
                 ->all();
         }
+        $articleIds = Repo::submission()->getCollector()
+            ->filterByContextIds([$context->getId()])
+            ->filterByStatus([Submission::STATUS_PUBLISHED])
+            ->orderBy(SubmissionCollector::ORDERBY_DATE_PUBLISHED, SubmissionCollector::ORDER_DIR_DESC)
+            ->limit(3)
+            ->getQueryBuilder()
+            ->where('po.status', Submission::STATUS_PUBLISHED)
+            ->orderBy('s.submission_id', 'desc')
+            ->pluck('s.submission_id');
+        $recentArticles = [];
+        foreach ($articleIds as $articleId) {
+            $article = Repo::submission()->get((int) $articleId, $context->getId());
+            $publication = $article?->getCurrentPublication();
+            if (!$publication || $article->getData('status') !== Submission::STATUS_PUBLISHED || $publication->getData('status') !== Submission::STATUS_PUBLISHED) {
+                continue;
+            }
+            $recentArticles[] = [
+                'title' => $publication->getLocalizedFullTitle(),
+                'path' => $article->getBestId(),
+                'date' => $publication->getData('datePublished'),
+            ];
+        }
         $templateManager->assign([
             'encountersHeroTitles' => $titles,
             'encountersHeroDescription' => trim((string) $this->getOption('introductionDescription')),
             'encountersCurrentIssue' => $currentIssue,
             'encountersRecentIssues' => $recentIssues,
             'encountersShowIssues' => $showIssues,
+            'encountersRecentArticles' => $recentArticles,
         ]);
 
         return Hook::CONTINUE;

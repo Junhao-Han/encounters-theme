@@ -28,13 +28,31 @@
     .encounters-cover-fallback { display: flex; align-items: center; justify-content: center; aspect-ratio: 3 / 2; padding: 20px; border: 1px solid @rule; background: #e9e3db; color: @accent; font: 600 24px/1.3 "Cormorant Garamond", Georgia, serif; text-align: center; overflow-wrap: anywhere; }
     .encounters-empty { margin: 0; color: #6e6861; font: 400 14px/1.6 Lora, Georgia, serif; }
 
+    .encounters-recent-articles { padding: 48px 0 64px; border-top: 1px solid #e9e1d7; }
+    .encounters-recent-articles .encounters-section-heading { margin-bottom: 0; }
+    .encounters-recent-articles .encounters-empty { margin-top: 24px; }
+    .encounters-article-list {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+
+        li { display: flex; align-items: baseline; justify-content: space-between; gap: 16px 32px; padding: 24px 0 16px; border-bottom: 1px solid #e6dcd0; }
+        h3 { flex: 1; min-width: 0; margin: 0; color: @ink; font: 500 24px/1.3 "Cormorant Garamond", Georgia, serif; overflow-wrap: anywhere; }
+        a { color: inherit; text-decoration: none; }
+        a:hover, a:focus-visible { color: @accent; text-decoration: underline; }
+    }
+    .encounters-article-date { flex: 0 1 auto; max-width: 40%; color: #6e6861; font: 400 16px/1.5 Inter, Arial, sans-serif; text-align: end; overflow-wrap: anywhere; }
+
     .encounters-existing-content { padding-top: 32px; padding-bottom: 32px; overflow-wrap: anywhere; }
     .encounters-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px; }
     .encounters-highlights img { max-width: 100%; height: auto; }
 
     @media (max-width: 600px) {
         .encounters-container { width: ~"calc(100% - 48px)"; }
-        .encounters-recent { padding-top: 36px; padding-bottom: 36px; }
+        .encounters-recent, .encounters-recent-articles { padding-top: 36px; padding-bottom: 36px; }
         .encounters-issue-grid { grid-template-columns: 1fr; }
+        .encounters-article-list li { flex-direction: column; align-items: flex-start; gap: 8px; }
+        .encounters-article-list h3 { font-size: 22px; }
+        .encounters-article-date { max-width: 100%; font-size: 14px; text-align: start; }
     }
 }
