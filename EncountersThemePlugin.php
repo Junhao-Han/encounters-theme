@@ -141,7 +141,8 @@ class EncountersThemePlugin extends ThemePlugin
 
         $currentIssue = null;
         $recentIssues = [];
-        if ($context->getData('publishingMode') != Journal::PUBLISHING_MODE_NONE) {
+        $showIssues = $context->getData('publishingMode') != Journal::PUBLISHING_MODE_NONE;
+        if ($showIssues) {
             $currentIssue = Repo::issue()->getCurrent($context->getId());
             if ($currentIssue && !$currentIssue->getPublished()) {
                 $currentIssue = null;
@@ -159,6 +160,7 @@ class EncountersThemePlugin extends ThemePlugin
             'encountersHeroDescription' => trim((string) $this->getOption('introductionDescription')),
             'encountersCurrentIssue' => $currentIssue,
             'encountersRecentIssues' => $recentIssues,
+            'encountersShowIssues' => $showIssues,
         ]);
 
         return Hook::CONTINUE;

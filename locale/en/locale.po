@@ -50,3 +50,6 @@ msgstr "Line chart"
 
 msgid "plugins.themes.encounters.submenu"
 msgstr "Show submenu: {$title}"
+
+msgid "plugins.themes.encounters.noIssues"
+msgstr "Published issues will appear here."

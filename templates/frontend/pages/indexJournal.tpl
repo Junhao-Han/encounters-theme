@@ -35,17 +35,21 @@
         </div>
     </section>
 
-    {if $encountersRecentIssues}
+    {if $encountersShowIssues}
         <section class="encounters-container encounters-recent" aria-labelledby="encounters-recent-heading">
             <div class="encounters-section-heading">
                 <h2 id="encounters-recent-heading">{translate key="plugins.themes.encounters.recentIssues"}</h2>
-                <a href="{url page="issue" op="archive"}">{translate key="journal.viewAllIssues"} <span aria-hidden="true">&rarr;</span></a>
+                <a href="{url page="issue" op="archive"}">{translate key="journal.viewAllIssues"} <img src="{$encountersThemeUrl|escape}/images/arrow-right.svg" width="12" height="12" alt=""></a>
             </div>
+            {if $encountersRecentIssues}
             <div class="encounters-issue-grid">
                 {foreach from=$encountersRecentIssues item=recentIssue}
                     {include file="frontend/objects/encounters_issue_card.tpl" recentIssue=$recentIssue}
                 {/foreach}
             </div>
+            {else}
+                <p class="encounters-empty">{translate key="plugins.themes.encounters.noIssues"}</p>
+            {/if}
         </section>
     {/if}
 

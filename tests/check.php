@@ -139,6 +139,7 @@ try {
         'encountersHeroDescription' => "Education & Humanities\n<script>bad</script>",
         'encountersCurrentIssue' => $issue,
         'encountersRecentIssues' => [$issue, new FixtureIssue('vol-2', 'Issue II')],
+        'encountersShowIssues' => true,
         'highlights' => new ArrayObject(), 'numAnnouncementsHomepage' => 0,
         'announcements' => [], 'additionalHomeContent' => '',
         'pageFooter' => '', 'baseUrl' => '', 'brandImage' => 'ojs.svg',
@@ -169,6 +170,10 @@ try {
     check(str_contains($empty, 'class="encounters-hero-media"') && !str_contains($empty, 'class="encounters-hero-image"'), 'Missing homepage image does not preserve an empty image area');
     check(str_contains($empty, 'id="encounters-introduction-heading">Encounters &amp; Education'), 'Introduction title does not fall back to the journal name');
     check(!str_contains($empty, 'class="encounters-description"'), 'Empty journal description leaves an empty block');
+    check(str_contains($empty, 'Published issues will appear here.'), 'Empty recent issues message is missing');
+    $smarty->assign(['encountersShowIssues' => false]);
+    $noIssues = $smarty->fetch('frontend/pages/indexJournal.tpl');
+    check(!str_contains($noIssues, 'id="encounters-recent-heading"'), 'Issues appear when journal publishing is disabled');
 
     $logo = ['uploadName' => 'logo.png', 'width' => 200, 'height' => 100, 'altText' => 'Journal "logo" & <identity>'];
     $smarty->assign('displayPageHeaderLogo', $logo);
