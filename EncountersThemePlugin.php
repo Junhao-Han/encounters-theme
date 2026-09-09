@@ -33,6 +33,16 @@ class EncountersThemePlugin extends ThemePlugin
             'label' => __('plugins.themes.encounters.mastheadTagline'),
             'default' => 'In Education, Humanities, and Technology',
         ]);
+        $this->addOption('aboutMenu', 'FieldOptions', [
+            'type' => 'radio',
+            'label' => __('plugins.themes.encounters.aboutMenu'),
+            'description' => __('plugins.themes.encounters.aboutMenu.description'),
+            'options' => [
+                ['value' => 'default', 'label' => __('plugins.themes.encounters.aboutMenu.default')],
+                ['value' => 'custom', 'label' => __('plugins.themes.encounters.aboutMenu.custom')],
+            ],
+            'default' => 'default',
+        ]);
         $this->addOption('introductionTitleEn', 'FieldText', [
             'label' => __('plugins.themes.encounters.introductionTitleEn'),
             'default' => 'Encounters in Education, Humanities, and Technology.',

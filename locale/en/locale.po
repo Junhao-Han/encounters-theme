@@ -18,6 +18,21 @@ msgstr "Short journal name in the header"
 msgid "plugins.themes.encounters.mastheadTagline"
 msgstr "Journal subtitle in the header"
 
+msgid "plugins.themes.encounters.aboutMenu"
+msgstr "About submenu"
+
+msgid "plugins.themes.encounters.aboutMenu.description"
+msgstr "Use the Encounters links or the links configured in Navigation Menus."
+
+msgid "plugins.themes.encounters.aboutMenu.default"
+msgstr "Encounters default"
+
+msgid "plugins.themes.encounters.aboutMenu.custom"
+msgstr "OJS navigation menu"
+
+msgid "plugins.themes.encounters.editorialTeam"
+msgstr "Editorial Team"
+
 msgid "plugins.themes.encounters.introductionTitleEn"
 msgstr "Homepage journal name — English"
 

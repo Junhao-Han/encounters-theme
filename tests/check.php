@@ -36,6 +36,7 @@ check(!str_contains($css, '/plugins/themes/default/'), 'Compiled CSS references 
 
 $translationLoader = new Gettext\Loader\PoLoader();
 $translations = $translationLoader->loadFile($pluginRoot . '/locale/en/locale.po');
+$ojsTranslations = $translationLoader->loadFile($ojsRoot . '/locale/en/locale.po');
 
 $temporary = sys_get_temp_dir() . '/encounters-check-' . bin2hex(random_bytes(5));
 mkdir($temporary . '/fixtures/frontend/components', 0700, true);
@@ -53,8 +54,10 @@ class FixtureJournal
 
 class FixtureTheme
 {
+    public function __construct(private string $aboutMenu = 'default') {}
     public function getOption(string $name): string
     {
+        if ($name === 'aboutMenu') return $this->aboutMenu;
         return $name === 'mastheadTitle' ? 'Encounters' : 'Education & Humanities';
     }
 }
@@ -79,7 +82,10 @@ class FixtureIssue
 
 class FixtureMenuItem extends \PKP\navigationMenu\NavigationMenuItem
 {
-    public function __construct(private string $title, private bool $visible = true, private bool $children = false) {}
+    public function __construct(private string $title, private bool $visible = true, private bool $children = false)
+    {
+        $this->setType(self::NMI_TYPE_CUSTOM);
+    }
     public function getLocalizedTitle(): string { return $this->title; }
     public function getUrl(): string { return '/about?x=1&y=2'; }
     public function getIsDisplayed(): bool { return $this->visible; }
@@ -105,8 +111,8 @@ try {
         $ojsRoot . '/lib/pkp/templates',
     ]);
     $smarty->error_reporting = E_ALL & ~E_DEPRECATED;
-    $smarty->registerPlugin('function', 'translate', static function (array $params) use ($translations): string {
-        $message = $translations->find(null, $params['key'])?->getTranslation() ?: $params['key'];
+    $smarty->registerPlugin('function', 'translate', static function (array $params) use ($translations, $ojsTranslations): string {
+        $message = $translations->find(null, $params['key'])?->getTranslation() ?: $ojsTranslations->find(null, $params['key'])?->getTranslation() ?: $params['key'];
         foreach ($params as $key => $value) {
             if ($key !== 'key') {
                 $message = str_replace('{$' . $key . '}', (string) $value, $message);
@@ -242,6 +248,43 @@ try {
     check(!str_contains($navigation, 'Private item'), 'Hidden navigation item is displayed');
     check(!str_contains($navigation, 'class="task_count"'), 'Regular menu item has a notification badge');
 
+    $aboutItem = new FixtureMenuItem('About & Journal', true, true);
+    $aboutItem->setType(\PKP\navigationMenu\NavigationMenuItem::NMI_TYPE_ABOUT);
+    $aboutMenu = (object) ['menuTree' => [(object) [
+        'navigationMenuItem' => $aboutItem,
+        'children' => [(object) ['navigationMenuItem' => new FixtureMenuItem('Custom child')]],
+    ]]];
+    $smarty->assign('navigationMenu', $aboutMenu);
+    $defaultAbout = $smarty->fetch('frontend/components/navigationMenu.tpl');
+    $menuDom = new DOMDocument();
+    $menuDom->loadHTML($defaultAbout);
+    $menuXPath = new DOMXPath($menuDom);
+    $defaultLinks = $menuXPath->query('//ul[@id="navigationPrimary-submenu-1"]/li/a');
+    $labels = [];
+    $paths = [];
+    foreach ($defaultLinks as $link) {
+        $labels[] = $link->textContent;
+        $paths[] = $link->getAttribute('href');
+    }
+    check($labels === ['About the Journal', 'Editorial Team', 'Submissions', 'Contact'], 'Default About menu labels or order are incorrect');
+    check($paths === array_map(fn ($op) => '/index.php/encounters/en/about/' . $op, ['index', 'editorialMasthead', 'submissions', 'contact']), 'Default About links are incorrect');
+    check(!str_contains($defaultAbout, 'Custom child'), 'Default About menu duplicates configured children');
+    $smarty->assign('activeTheme', new FixtureTheme('custom'));
+    $customAbout = $smarty->fetch('frontend/components/navigationMenu.tpl');
+    check(str_contains($customAbout, 'Custom child') && !str_contains($customAbout, 'Editorial Team'), 'Custom About menu is overridden');
+    $smarty->assign(['activeTheme' => new FixtureTheme(), 'id' => 'navigationUser']);
+    $userAbout = $smarty->fetch('frontend/components/navigationMenu.tpl');
+    check(str_contains($userAbout, 'Custom child') && !str_contains($userAbout, 'Editorial Team'), 'Default About menu affects the user menu');
+    $smarty->assign(['id' => 'navigationPrimary', 'currentJournal' => null]);
+    $siteAbout = $smarty->fetch('frontend/components/navigationMenu.tpl');
+    check(str_contains($siteAbout, 'Custom child') && !str_contains($siteAbout, 'Editorial Team'), 'Default About menu affects the site menu');
+    $smarty->assign('currentJournal', $journal);
+    $aboutMenu->menuTree[0]->navigationMenuItem = new FixtureMenuItem('About without children');
+    $aboutMenu->menuTree[0]->navigationMenuItem->setType(\PKP\navigationMenu\NavigationMenuItem::NMI_TYPE_ABOUT);
+    $aboutMenu->menuTree[0]->children = [];
+    $emptyAbout = $smarty->fetch('frontend/components/navigationMenu.tpl');
+    check(str_contains($emptyAbout, 'Editorial Team') && str_contains($emptyAbout, 'data-encounters-submenu'), 'Default About menu needs database children to work');
+
     // Exercise the fetch hook at the same point where OJS decorates a dashboard title.
     \PKP\plugins\Hook::add('TemplateManager::fetch', $plugin->prepareDashboardMenuItem(...));
     $dashboard = new FixtureMenuItem('Dashboard & "tasks" <img src=x onerror=alert(1)>', true, true);
@@ -292,6 +335,7 @@ try {
     echo "PASS: issue routes, escaping, cover fallback, language routes and empty states.\n";
     echo "PASS: no parent-theme LESS imports; disclosure markup and static highlights.\n";
     echo "PASS: dashboard notification badges, menu title escaping and logo alternative text.\n";
+    echo "PASS: default About menu, custom menu option and menu isolation.\n";
     echo "Installation, database filtering and browser appearance still require live testing.\n";
 } finally {
     $items = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($temporary, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST);

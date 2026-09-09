@@ -5,9 +5,11 @@
  * Distributed under the GNU GPL v3. See LICENSE.
  *}
 {if $navigationMenu}
+    {assign var=useDefaultAboutMenu value=($id == 'navigationPrimary' && $currentJournal && $activeTheme->getOption('aboutMenu') == 'default')}
     <ul id="{$id|escape}" class="{$ulClass|escape} pkp_nav_list">
         {foreach item=assignment from=$navigationMenu->menuTree name=encountersMenu}
             {if !$assignment->navigationMenuItem->getIsDisplayed()}{continue}{/if}
+            {assign var=useDefaultAbout value=($useDefaultAboutMenu && $assignment->navigationMenuItem->getType() == 'NMI_TYPE_ABOUT')}
             <li class="{$liClass|escape}">
                 <a href="{$assignment->navigationMenuItem->getUrl()|escape}">
                     {$assignment->navigationMenuItem->getLocalizedTitle()|escape}
@@ -15,23 +17,30 @@
                         <span class="task_count">{$assignment->navigationMenuItem->getData('encountersTaskCount')|intval}</span>
                     {/if}
                 </a>
-                {if $assignment->navigationMenuItem->getIsChildVisible()}
+                {if $useDefaultAbout || $assignment->navigationMenuItem->getIsChildVisible()}
                     <button type="button" class="encounters-submenu-toggle" data-encounters-submenu aria-expanded="false" aria-controls="{$id|escape}-submenu-{$smarty.foreach.encountersMenu.iteration}" aria-label="{translate|escape key="plugins.themes.encounters.submenu" title=$assignment->navigationMenuItem->getLocalizedTitle()}" hidden>
                         <img src="{$encountersThemeUrl|escape}/images/menu-chevron.svg" width="8" height="8" alt="">
                     </button>
                     <ul id="{$id|escape}-submenu-{$smarty.foreach.encountersMenu.iteration}">
-                        {foreach item=child from=$assignment->children}
-                            {if $child->navigationMenuItem->getIsDisplayed()}
-                                <li class="{$liClass|escape}">
-                                    <a href="{$child->navigationMenuItem->getUrl()|escape}">
-                                        {$child->navigationMenuItem->getLocalizedTitle()|escape}
-                                        {if $child->navigationMenuItem->getData('encountersTaskCount') !== null}
-                                            <span class="task_count">{$child->navigationMenuItem->getData('encountersTaskCount')|intval}</span>
-                                        {/if}
-                                    </a>
-                                </li>
-                            {/if}
-                        {/foreach}
+                        {if $useDefaultAbout}
+                            <li class="{$liClass|escape}"><a href="{url page="about"}">{translate key="about.aboutContext"}</a></li>
+                            <li class="{$liClass|escape}"><a href="{url page="about" op="editorialMasthead"}">{translate key="plugins.themes.encounters.editorialTeam"}</a></li>
+                            <li class="{$liClass|escape}"><a href="{url page="about" op="submissions"}">{translate key="about.submissions"}</a></li>
+                            <li class="{$liClass|escape}"><a href="{url page="about" op="contact"}">{translate key="about.contact"}</a></li>
+                        {else}
+                            {foreach item=child from=$assignment->children}
+                                {if $child->navigationMenuItem->getIsDisplayed()}
+                                    <li class="{$liClass|escape}">
+                                        <a href="{$child->navigationMenuItem->getUrl()|escape}">
+                                            {$child->navigationMenuItem->getLocalizedTitle()|escape}
+                                            {if $child->navigationMenuItem->getData('encountersTaskCount') !== null}
+                                                <span class="task_count">{$child->navigationMenuItem->getData('encountersTaskCount')|intval}</span>
+                                            {/if}
+                                        </a>
+                                    </li>
+                                {/if}
+                            {/foreach}
+                        {/if}
                     </ul>
                 {/if}
             </li>
