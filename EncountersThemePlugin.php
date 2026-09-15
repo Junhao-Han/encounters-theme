@@ -99,6 +99,18 @@ class EncountersThemePlugin extends ThemePlugin
         ]);
         Hook::add('TemplateManager::display', $this->prepareTemplate(...));
         Hook::add('TemplateManager::fetch', $this->prepareDashboardMenuItem(...));
+        Hook::add('Locale::translate', $this->translateSearchResults(...));
+    }
+
+    public function translateSearchResults(string $hookName, array $args): bool
+    {
+        if ($args[1] !== 'search.searchResults.foundPlural' || $args[3] === null) {
+            return Hook::CONTINUE;
+        }
+
+        // OJS 3.5 requests a plural for this singular translation entry.
+        $args[0] = __('search.searchResults.foundPlural', ['count' => $args[3]] + $args[2], $args[4]);
+        return Hook::ABORT;
     }
 
     private function getStylesheetName(): string
