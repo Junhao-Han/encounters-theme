@@ -29,7 +29,7 @@
                     {/if}
                 </div>
                 {if $encountersCurrentIssue}
-                    <a class="encounters-button" href="{url page="issue" op="view" path=$encountersCurrentIssue->getBestIssueId()}">{translate key="journal.currentIssue"}</a>
+                    <a id="homepageIssue" class="encounters-button" href="{url page="issue" op="view" path=$encountersCurrentIssue->getBestIssueId()}">{translate key="journal.currentIssue"}</a>
                 {/if}
             </div>
         </div>
@@ -79,7 +79,7 @@
         <div class="encounters-news">
             <div class="encounters-container encounters-news-grid">
                 {if $encountersShowAnnouncements}
-                    <section class="encounters-announcements" aria-labelledby="encounters-announcements-heading">
+                    <section id="homepageAnnouncements" class="encounters-announcements" aria-labelledby="encounters-announcements-heading" tabindex="-1">
                         <h2 id="encounters-announcements-heading">{translate key="announcement.announcements"}</h2>
                         {if $encountersAnnouncements}
                             {foreach from=$encountersAnnouncements item=announcement}

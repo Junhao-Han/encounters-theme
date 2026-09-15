@@ -53,7 +53,6 @@ $temporary = sys_get_temp_dir() . '/encounters-check-' . bin2hex(random_bytes(5)
 mkdir($temporary . '/fixtures/frontend/components', 0700, true);
 mkdir($temporary . '/compile', 0700, true);
 file_put_contents($temporary . '/fixtures/frontend/components/headerHead.tpl', '<head><title>{$pageTitleTranslated|escape}</title></head>');
-file_put_contents($temporary . '/fixtures/frontend/components/skipLinks.tpl', '<a href="#pkp_content_main">Skip to content</a>');
 
 class FixtureJournal
 {
@@ -69,7 +68,11 @@ class FixtureTheme
     public function getOption(string $name): string
     {
         if ($name === 'aboutMenu') return $this->aboutMenu;
-        return $name === 'mastheadTitle' ? 'Encounters' : 'Education & Humanities';
+        return match ($name) {
+            'mastheadTitle' => 'Encounters',
+            'mastheadTagline' => 'Education & Humanities',
+            default => '',
+        };
     }
 }
 
@@ -175,11 +178,13 @@ try {
         'encountersShowAnnouncements' => true, 'encountersAnnouncements' => [new FixtureAnnouncement()],
         'encountersMonographUrl' => 'https://example.org/series?a=1&b=2',
         'encountersMonographDescription' => 'History & <script>bad</script>',
-        'highlights' => new ArrayObject(), 'numAnnouncementsHomepage' => 0,
+        'highlights' => new ArrayObject(), 'numAnnouncementsHomepage' => 1,
         'announcements' => [], 'additionalHomeContent' => '',
         'pageFooter' => '', 'baseUrl' => '', 'brandImage' => 'ojs.svg',
     ]);
     $html = $smarty->fetch('frontend/pages/indexJournal.tpl');
+    check(str_contains($html, 'href="#homepageIssue"') && str_contains($html, 'id="homepageIssue"'), 'Current issue skip link has no destination');
+    check(str_contains($html, 'href="#homepageAnnouncements"') && str_contains($html, 'id="homepageAnnouncements"'), 'Announcement skip link has no destination');
     check(str_contains($html, '/issue/view/vol-3'), 'Issue card or current-issue URL is incorrect');
     check(str_contains($html, '/issue/archive'), 'Archive URL is incorrect');
     check(str_contains($html, 'Issue &lt;script&gt;bad&lt;/script&gt;'), 'Issue title is not escaped');
@@ -211,6 +216,7 @@ try {
         'encountersShowAnnouncements' => false, 'encountersMonographUrl' => '',
     ]);
     $empty = $smarty->fetch('frontend/pages/indexJournal.tpl');
+    check(!str_contains($empty, 'href="#homepageIssue"') && !str_contains($empty, 'href="#homepageAnnouncements"'), 'Empty homepage contains broken skip links');
     check(!str_contains($empty, 'class="encounters-issue-card"'), 'Empty issue list shows fabricated cards');
     check(!str_contains($empty, 'class="encounters-button"'), 'Current issue link shown without an issue');
     check(!str_contains($empty, '<details'), 'Single-language journal shows unnecessary language selector');

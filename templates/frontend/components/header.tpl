@@ -12,7 +12,7 @@
 <body class="encounters_theme pkp_page_{$requestedPage|default:"index"|escape} pkp_op_{$requestedOp|default:"index"|escape}{if $displayPageHeaderLogo} has_site_logo{/if}" dir="{$currentLocaleLangDir|default:"ltr"|escape}">
 <div class="pkp_structure_page">
     <header class="pkp_structure_head encounters-header" id="headerNavigationContainer" role="banner">
-        {include file="frontend/components/skipLinks.tpl"}
+        {include file="frontend/components/skipLinks.tpl" issue=$encountersCurrentIssue|default:null announcements=$encountersAnnouncements|default:[]}
         <div class="pkp_head_wrapper">
             <div class="encounters-topbar">
                 {if !empty($encountersLocales) && count($encountersLocales) > 1}
