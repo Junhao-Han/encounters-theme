@@ -1,0 +1,97 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Encounters 0.1.0\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "plugins.themes.encounters.name"
+msgstr "Encounters"
+
+msgid "plugins.themes.encounters.description"
+msgstr "Un tema independiente para la revista Encounters."
+
+msgid "plugins.themes.encounters.mastheadTitle"
+msgstr "Nombre corto de la revista en la cabecera"
+
+msgid "plugins.themes.encounters.mastheadTagline"
+msgstr "Subtítulo de la revista en la cabecera"
+
+msgid "plugins.themes.encounters.aboutMenu"
+msgstr "Submenú Acerca de"
+
+msgid "plugins.themes.encounters.aboutMenu.description"
+msgstr "Usar los enlaces de Encounters o los enlaces configurados en los menús de navegación."
+
+msgid "plugins.themes.encounters.aboutMenu.default"
+msgstr "Enlaces predeterminados de Encounters"
+
+msgid "plugins.themes.encounters.aboutMenu.custom"
+msgstr "Menú de navegación de OJS"
+
+msgid "plugins.themes.encounters.editorialTeam"
+msgstr "Equipo editorial"
+
+msgid "plugins.themes.encounters.introductionTitleEn"
+msgstr "Nombre de la revista en la página de inicio — inglés"
+
+msgid "plugins.themes.encounters.introductionTitleEs"
+msgstr "Nombre de la revista en la página de inicio — español"
+
+msgid "plugins.themes.encounters.introductionTitleFr"
+msgstr "Nombre de la revista en la página de inicio — francés"
+
+msgid "plugins.themes.encounters.introductionDescription"
+msgstr "Presentación de la página de inicio"
+
+msgid "plugins.themes.encounters.recentIssues"
+msgstr "Números recientes"
+
+msgid "plugins.themes.encounters.menu"
+msgstr "Menú"
+
+msgid "plugins.themes.encounters.displayStats"
+msgstr "Estadísticas de descargas de artículos"
+
+msgid "plugins.themes.encounters.displayStats.none"
+msgstr "Ocultar estadísticas"
+
+msgid "plugins.themes.encounters.displayStats.bar"
+msgstr "Gráfico de barras"
+
+msgid "plugins.themes.encounters.displayStats.line"
+msgstr "Gráfico de líneas"
+
+msgid "plugins.themes.encounters.submenu"
+msgstr "Mostrar submenú: {$title}"
+
+msgid "plugins.themes.encounters.noIssues"
+msgstr "Los números publicados aparecerán aquí."
+
+msgid "plugins.themes.encounters.recentArticles"
+msgstr "Artículos de próxima publicación"
+
+msgid "plugins.themes.encounters.noArticles"
+msgstr "Los artículos publicados aparecerán aquí."
+
+msgid "plugins.themes.encounters.announcementsIntro"
+msgstr "Noticias y novedades de la revista."
+
+msgid "plugins.themes.encounters.viewAnnouncements"
+msgstr "Ver avisos"
+
+msgid "plugins.themes.encounters.monographSeries"
+msgstr "Serie de monografías"
+
+msgid "plugins.themes.encounters.monographDescription"
+msgstr "Descripción de la serie de monografías"
+
+msgid "plugins.themes.encounters.monographUrl"
+msgstr "Sitio web de la serie de monografías"
+
+msgid "plugins.themes.encounters.monographUrl.description"
+msgstr "Introduzca una dirección http:// o https://. Deje este campo vacío para ocultar la tarjeta."
+
+msgid "plugins.themes.encounters.exploreSeries"
+msgstr "Explorar la serie"

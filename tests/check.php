@@ -37,6 +37,17 @@ check(!str_contains($css, '/plugins/themes/default/'), 'Compiled CSS references 
 $translationLoader = new Gettext\Loader\PoLoader();
 $translations = $translationLoader->loadFile($pluginRoot . '/locale/en/locale.po');
 $ojsTranslations = $translationLoader->loadFile($ojsRoot . '/locale/en/locale.po');
+foreach (['fr', 'es'] as $locale) {
+    $localized = $translationLoader->loadFile($pluginRoot . '/locale/' . $locale . '/locale.po');
+    foreach ($translations as $translation) {
+        $message = $localized->find(null, $translation->getOriginal())?->getTranslation();
+        check(!empty($message), 'Missing ' . $locale . ' translation: ' . $translation->getOriginal());
+        preg_match_all('/\{\$\w+\}/', $translation->getTranslation(), $placeholders);
+        foreach ($placeholders[0] as $placeholder) {
+            check(str_contains($message, $placeholder), 'Missing translation placeholder: ' . $placeholder);
+        }
+    }
+}
 
 $temporary = sys_get_temp_dir() . '/encounters-check-' . bin2hex(random_bytes(5));
 mkdir($temporary . '/fixtures/frontend/components', 0700, true);

@@ -1,0 +1,97 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Encounters 0.1.0\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "plugins.themes.encounters.name"
+msgstr "Encounters"
+
+msgid "plugins.themes.encounters.description"
+msgstr "Un thème autonome pour la revue Encounters."
+
+msgid "plugins.themes.encounters.mastheadTitle"
+msgstr "Nom court de la revue dans l’en-tête"
+
+msgid "plugins.themes.encounters.mastheadTagline"
+msgstr "Sous-titre de la revue dans l’en-tête"
+
+msgid "plugins.themes.encounters.aboutMenu"
+msgstr "Sous-menu À propos"
+
+msgid "plugins.themes.encounters.aboutMenu.description"
+msgstr "Utiliser les liens d’Encounters ou les liens configurés dans les menus de navigation."
+
+msgid "plugins.themes.encounters.aboutMenu.default"
+msgstr "Liens par défaut d’Encounters"
+
+msgid "plugins.themes.encounters.aboutMenu.custom"
+msgstr "Menu de navigation OJS"
+
+msgid "plugins.themes.encounters.editorialTeam"
+msgstr "Équipe éditoriale"
+
+msgid "plugins.themes.encounters.introductionTitleEn"
+msgstr "Nom de la revue sur la page d’accueil — anglais"
+
+msgid "plugins.themes.encounters.introductionTitleEs"
+msgstr "Nom de la revue sur la page d’accueil — espagnol"
+
+msgid "plugins.themes.encounters.introductionTitleFr"
+msgstr "Nom de la revue sur la page d’accueil — français"
+
+msgid "plugins.themes.encounters.introductionDescription"
+msgstr "Présentation de la page d’accueil"
+
+msgid "plugins.themes.encounters.recentIssues"
+msgstr "Numéros récents"
+
+msgid "plugins.themes.encounters.menu"
+msgstr "Menu"
+
+msgid "plugins.themes.encounters.displayStats"
+msgstr "Statistiques de téléchargement des articles"
+
+msgid "plugins.themes.encounters.displayStats.none"
+msgstr "Masquer les statistiques"
+
+msgid "plugins.themes.encounters.displayStats.bar"
+msgstr "Diagramme à barres"
+
+msgid "plugins.themes.encounters.displayStats.line"
+msgstr "Graphique en courbes"
+
+msgid "plugins.themes.encounters.submenu"
+msgstr "Afficher le sous-menu : {$title}"
+
+msgid "plugins.themes.encounters.noIssues"
+msgstr "Les numéros publiés apparaîtront ici."
+
+msgid "plugins.themes.encounters.recentArticles"
+msgstr "Articles à paraître"
+
+msgid "plugins.themes.encounters.noArticles"
+msgstr "Les articles publiés apparaîtront ici."
+
+msgid "plugins.themes.encounters.announcementsIntro"
+msgstr "Actualités et informations de la revue."
+
+msgid "plugins.themes.encounters.viewAnnouncements"
+msgstr "Voir les annonces"
+
+msgid "plugins.themes.encounters.monographSeries"
+msgstr "Collection de monographies"
+
+msgid "plugins.themes.encounters.monographDescription"
+msgstr "Description de la collection de monographies"
+
+msgid "plugins.themes.encounters.monographUrl"
+msgstr "Site web de la collection de monographies"
+
+msgid "plugins.themes.encounters.monographUrl.description"
+msgstr "Saisir une adresse http:// ou https://. Laisser ce champ vide pour masquer la carte."
+
+msgid "plugins.themes.encounters.exploreSeries"
+msgstr "Découvrir la collection"
