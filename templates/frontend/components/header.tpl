@@ -39,7 +39,7 @@
                             {if $displayPageHeaderLogo}
                                 <img src="{$publicFilesDir}/{$displayPageHeaderLogo.uploadName|escape:"url"}" alt="{$displayPageHeaderLogo.altText|default:$displayPageHeaderTitle|default:$siteTitle|escape}" width="{$displayPageHeaderLogo.width|escape}" height="{$displayPageHeaderLogo.height|escape}">
                             {else}
-                                <img class="encounters-brand-mark" src="{$encountersThemeUrl|escape}/images/encounters-logo.png" width="501" height="383" alt="">
+                                <img class="encounters-brand-mark" src="{$encountersThemeUrl|escape}/images/encounters-logo.png?v=2" width="496" height="353" alt="">
                                 <span class="encounters-brand-copy">
                                     <span class="encounters-brand-title">{$activeTheme->getOption('mastheadTitle')|default:$displayPageHeaderTitle|escape}</span>
                                     {if $activeTheme->getOption('mastheadTagline')}
