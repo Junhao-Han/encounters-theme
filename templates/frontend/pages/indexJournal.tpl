@@ -8,7 +8,13 @@
         <div class="encounters-container encounters-hero-grid">
             <div class="encounters-hero-media">
                 {if !empty($homepageImage.uploadName)}
-                    <img class="encounters-hero-image" src="{$publicFilesDir|escape}/{$homepageImage.uploadName|escape:"url"}" alt="{$homepageImage.altText|default:''|escape}"{if !empty($homepageImage.width) && !empty($homepageImage.height)} width="{$homepageImage.width|intval}" height="{$homepageImage.height|intval}"{/if}>
+                    {assign var=heroImageAlt value=$homepageImage.altText|default:''}
+                    {if $encountersHeroIssue}
+                        {assign var=heroImageAlt value=$heroImageAlt|default:$encountersHeroIssue->getIssueIdentification()}
+                        <a class="encounters-hero-cover" href="{url page="issue" op="view" path=$encountersHeroIssue->getBestIssueId()}">
+                    {/if}
+                    <img class="encounters-hero-image" src="{$publicFilesDir|escape}/{$homepageImage.uploadName|escape:"url"}" alt="{$heroImageAlt|escape}"{if !empty($homepageImage.width) && !empty($homepageImage.height)} width="{$homepageImage.width|intval}" height="{$homepageImage.height|intval}"{/if}>
+                    {if $encountersHeroIssue}</a>{/if}
                 {/if}
             </div>
             <div class="encounters-hero-copy">

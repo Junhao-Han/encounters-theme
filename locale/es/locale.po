@@ -69,6 +69,15 @@ msgstr "Mostrar submenú: {$title}"
 msgid "plugins.themes.encounters.noIssues"
 msgstr "Los números publicados aparecerán aquí."
 
+msgid "plugins.themes.encounters.heroIssue"
+msgstr "Enlace de la imagen de inicio"
+
+msgid "plugins.themes.encounters.heroIssue.description"
+msgstr "Elija el número publicado que se abrirá al pulsar la imagen de inicio. Suba la imagen en Apariencia > Configuración."
+
+msgid "plugins.themes.encounters.heroIssue.none"
+msgstr "Sin enlace"
+
 msgid "plugins.themes.encounters.recentArticles"
 msgstr "Artículos de próxima publicación"
 

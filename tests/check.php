@@ -168,6 +168,7 @@ try {
         'homepageImage' => ['uploadName' => 'hero.jpg', 'altText' => 'Journal & campus', 'width' => 360, 'height' => 240],
         'encountersHeroDescription' => "Education & Humanities\n<script>bad</script>",
         'encountersCurrentIssue' => $issue,
+        'encountersHeroIssue' => $issue,
         'encountersRecentIssues' => [$issue, new FixtureIssue('vol-2', 'Issue II')],
         'encountersShowIssues' => true,
         'encountersRecentArticles' => [
@@ -195,7 +196,8 @@ try {
     check(str_contains($html, 'Recent Issues'), 'Theme translation not loaded');
     check(str_contains($html, 'lang="es" dir="auto">Encuentros en Educación'), 'Translated introduction title or language is missing');
     check(str_contains($html, 'Rencontres &lt;script&gt;bad&lt;/script&gt;'), 'Introduction title is not escaped');
-    check(str_contains($html, 'alt="Journal &amp; campus" width="360" height="240"'), 'Homepage image dimensions or alternative text are missing');
+    check(str_contains($html, '<a class="encounters-hero-cover" href="/index.php/encounters/en/issue/view/vol-3">'), 'Hero cover does not link to its issue');
+    check(str_contains($html, 'class="encounters-hero-image" src="/public/journals/1/hero.jpg" alt="Journal &amp; campus" width="360" height="240"'), 'Uploaded hero image or alternative text is missing or unsafe');
     check(str_contains($html, "Education &amp; Humanities<br />\n&lt;script&gt;bad&lt;/script&gt;"), 'Introduction text is not escaped or line breaks are missing');
     check(str_contains($html, 'Forthcoming Articles'), 'Article section heading is missing');
     check(str_contains($html, 'Teaching &amp; &lt;script&gt;bad&lt;/script&gt;'), 'Article title is not escaped');
@@ -208,8 +210,18 @@ try {
     check(str_contains($html, 'https://example.org/series?a=1&amp;b=2'), 'Series URL is not escaped');
     check(str_contains($html, 'History &amp; &lt;script&gt;bad&lt;/script&gt;'), 'Series description is not escaped');
 
+    $smarty->assign('homepageImage', ['uploadName' => 'hero image.jpg', 'altText' => '']);
+    $imageWithoutAlt = $smarty->fetch('frontend/pages/indexJournal.tpl');
+    check(str_contains($imageWithoutAlt, 'src="/public/journals/1/hero%20image.jpg" alt="Issue &lt;script&gt;bad&lt;/script&gt;"'), 'Linked hero image has no accessible issue name');
+    $smarty->assign('encountersHeroIssue', null);
+    $unlinkedImage = $smarty->fetch('frontend/pages/indexJournal.tpl');
+    check(str_contains($unlinkedImage, 'class="encounters-hero-image"') && !str_contains($unlinkedImage, 'class="encounters-hero-cover"'), 'Unlinked hero image is missing or falls back to the current issue');
+    $smarty->assign(['homepageImage' => null, 'encountersHeroIssue' => $issue]);
+    $missingImage = $smarty->fetch('frontend/pages/indexJournal.tpl');
+    check(!str_contains($missingImage, 'class="encounters-hero-image"') && !str_contains($missingImage, 'class="encounters-hero-cover"'), 'Missing homepage image leaves an empty link or uses the issue cover');
+
     $smarty->assign([
-        'homepageImage' => null, 'encountersCurrentIssue' => null,
+        'encountersHeroIssue' => null, 'encountersCurrentIssue' => null,
         'encountersRecentIssues' => [], 'encountersLocales' => ['en' => 'English'],
         'encountersHeroTitles' => [], 'encountersHeroDescription' => '',
         'encountersRecentArticles' => [], 'encountersAnnouncements' => [],
@@ -220,7 +232,7 @@ try {
     check(!str_contains($empty, 'class="encounters-issue-card"'), 'Empty issue list shows fabricated cards');
     check(!str_contains($empty, 'class="encounters-button"'), 'Current issue link shown without an issue');
     check(!str_contains($empty, '<details'), 'Single-language journal shows unnecessary language selector');
-    check(str_contains($empty, 'class="encounters-hero-media"') && !str_contains($empty, 'class="encounters-hero-image"'), 'Missing homepage image does not preserve an empty image area');
+    check(str_contains($empty, 'class="encounters-hero-media"') && !str_contains($empty, 'class="encounters-hero-image"'), 'Empty hero image area is missing or contains an image');
     check(str_contains($empty, 'id="encounters-introduction-heading">Encounters &amp; Education'), 'Introduction title does not fall back to the journal name');
     check(!str_contains($empty, 'class="encounters-description"'), 'Empty journal description leaves an empty block');
     check(str_contains($empty, 'Published issues will appear here.'), 'Empty recent issues message is missing');

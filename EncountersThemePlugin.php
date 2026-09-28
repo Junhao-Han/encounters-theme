@@ -59,6 +59,12 @@ class EncountersThemePlugin extends ThemePlugin
             'label' => __('plugins.themes.encounters.introductionDescription'),
             'default' => 'An international, interdisciplinary journal exploring the intersections of Education, Humanities, and Technology',
         ]);
+        $this->addOption('heroIssueId', 'FieldSelect', [
+            'label' => __('plugins.themes.encounters.heroIssue'),
+            'description' => __('plugins.themes.encounters.heroIssue.description'),
+            'options' => [['value' => 0, 'label' => __('plugins.themes.encounters.heroIssue.none')]],
+            'default' => 0,
+        ]);
         $this->addOption('monographDescription', 'FieldTextarea', [
             'label' => __('plugins.themes.encounters.monographDescription'),
             'default' => "Supported by Queen's University Library, THE is an open access series exploring the history, philosophy, and sociology of education.",
@@ -100,6 +106,29 @@ class EncountersThemePlugin extends ThemePlugin
         Hook::add('TemplateManager::display', $this->prepareTemplate(...));
         Hook::add('TemplateManager::fetch', $this->prepareDashboardMenuItem(...));
         Hook::add('Locale::translate', $this->translateSearchResults(...));
+    }
+
+    public function getOptionsConfig()
+    {
+        $options = parent::getOptionsConfig();
+        if (!isset($options['heroIssueId'])) {
+            return $options;
+        }
+
+        $choices = [['value' => 0, 'label' => __('plugins.themes.encounters.heroIssue.none')]];
+        $context = Application::get()->getRequest()->getContext();
+        if ($context && $context->getData('publishingMode') != Journal::PUBLISHING_MODE_NONE) {
+            $issues = Repo::issue()->getCollector()
+                ->filterByContextIds([$context->getId()])
+                ->filterByPublished(true)
+                ->orderBy(Collector::ORDERBY_DATE_PUBLISHED)
+                ->getMany();
+            foreach ($issues as $issue) {
+                $choices[] = ['value' => $issue->getId(), 'label' => $issue->getIssueIdentification()];
+            }
+        }
+        $options['heroIssueId']->options = $choices;
+        return $options;
     }
 
     public function translateSearchResults(string $hookName, array $args): bool
@@ -174,12 +203,20 @@ class EncountersThemePlugin extends ThemePlugin
         }
 
         $currentIssue = null;
+        $heroIssue = null;
         $recentIssues = [];
         $showIssues = $context->getData('publishingMode') != Journal::PUBLISHING_MODE_NONE;
         if ($showIssues) {
             $currentIssue = Repo::issue()->getCurrent($context->getId());
             if ($currentIssue && !$currentIssue->getPublished()) {
                 $currentIssue = null;
+            }
+            $heroIssueId = (int) $this->getOption('heroIssueId');
+            if ($heroIssueId > 0) {
+                $heroIssue = Repo::issue()->get($heroIssueId, $context->getId());
+                if ($heroIssue && !$heroIssue->getPublished()) {
+                    $heroIssue = null;
+                }
             }
             $recentIssues = Repo::issue()->getCollector()
                 ->filterByContextIds([$context->getId()])
@@ -219,6 +256,7 @@ class EncountersThemePlugin extends ThemePlugin
             'encountersHeroTitles' => $titles,
             'encountersHeroDescription' => trim((string) $this->getOption('introductionDescription')),
             'encountersCurrentIssue' => $currentIssue,
+            'encountersHeroIssue' => $heroIssue,
             'encountersRecentIssues' => $recentIssues,
             'encountersShowIssues' => $showIssues,
             'encountersRecentArticles' => $recentArticles,

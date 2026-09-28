@@ -69,6 +69,15 @@ msgstr "Afficher le sous-menu : {$title}"
 msgid "plugins.themes.encounters.noIssues"
 msgstr "Les numéros publiés apparaîtront ici."
 
+msgid "plugins.themes.encounters.heroIssue"
+msgstr "Lien de l’image de la page d’accueil"
+
+msgid "plugins.themes.encounters.heroIssue.description"
+msgstr "Choisissez le numéro publié à ouvrir lorsque l’image de la page d’accueil est sélectionnée. Téléversez l’image dans Apparence > Configuration."
+
+msgid "plugins.themes.encounters.heroIssue.none"
+msgstr "Aucun lien"
+
 msgid "plugins.themes.encounters.recentArticles"
 msgstr "Articles à paraître"
 
