@@ -30,6 +30,25 @@
 
     .pkp_structure_main::before, .pkp_structure_main::after { display: none; }
     .encounters-container { width: 100%; max-width: 1280px; margin: auto; padding-left: 48px; padding-right: 48px; }
+
+    .obj_issue_toc .section {
+        &::before { content: none; }
+
+        > h2, > h3 {
+            display: block;
+            position: static;
+            margin: 0 0 24px;
+            padding: 0 0 12px;
+            border-bottom: 1px solid @rule;
+            background: transparent;
+            color: @accent;
+            font-size: 24px;
+            font-weight: 400;
+            line-height: 1.3;
+        }
+
+        .articles { margin-top: 0; }
+    }
 }
 
 // Full-width journal homepage.
