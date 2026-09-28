@@ -160,3 +160,23 @@ test('reviewer interests and journal consent follow registration selections', ()
     assert.equal(consent.classList.contains('context_privacy_visible'), false);
     assert.equal(consent.hidden, true);
 });
+
+test('search month names follow the page language without changing selected values', () => {
+    for (const [lang, january, december] of [['en', 'Jan', 'Dec'], ['es', 'ene', 'dic'], ['fr', 'janv.', 'déc.']]) {
+        const document = new Element('document');
+        document.documentElement = {lang};
+        const selects = ['dateFromMonth', 'dateToMonth'].map((id) => {
+            const select = document.append(new Element('select', id));
+            select.options = [{value: '', textContent: ''}, ...Array.from({length: 12}, (_, month) => ({value: String(month + 1), textContent: 'English month', selected: month === 8}))];
+            return select;
+        });
+        runInNewContext(readFileSync(join(__dirname, '../js/forms.js'), 'utf8'), {document});
+        for (const select of selects) {
+            assert.equal(select.options[0].textContent, '');
+            assert.equal(select.options[1].textContent, january);
+            assert.equal(select.options[12].textContent, december);
+            assert.equal(select.options[9].value, '9');
+            assert.equal(select.options[9].selected, true);
+        }
+    }
+});

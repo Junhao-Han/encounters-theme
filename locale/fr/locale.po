@@ -106,7 +106,13 @@ msgid "plugins.themes.encounters.monographSeries"
 msgstr "Collection de monographies"
 
 msgid "plugins.themes.encounters.monographDescription"
-msgstr "Description de la collection de monographies"
+msgstr "Description de la collection de monographies — Anglais"
+
+msgid "plugins.themes.encounters.monographDescriptionEs"
+msgstr "Description de la collection de monographies — Espagnol"
+
+msgid "plugins.themes.encounters.monographDescriptionFr"
+msgstr "Description de la collection de monographies — Français"
 
 msgid "plugins.themes.encounters.monographUrl"
 msgstr "Site web de la collection de monographies"

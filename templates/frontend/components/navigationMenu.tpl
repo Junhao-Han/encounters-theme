@@ -10,15 +10,18 @@
         {foreach item=assignment from=$navigationMenu->menuTree name=encountersMenu}
             {if !$assignment->navigationMenuItem->getIsDisplayed()}{continue}{/if}
             {assign var=useDefaultAbout value=($useDefaultAboutMenu && $assignment->navigationMenuItem->getType() == 'NMI_TYPE_ABOUT')}
+            {assign var=itemTitle value=$assignment->navigationMenuItem->getLocalizedTitle()}
+            {assign var=itemTitleKey value=$activeTheme->getNavigationTitleKey($assignment->navigationMenuItem, $currentLocale)}
+            {if $itemTitleKey}{capture assign=itemTitle}{translate key=$itemTitleKey}{/capture}{/if}
             <li class="{$liClass|escape}">
                 <a href="{$assignment->navigationMenuItem->getUrl()|escape}">
-                    {$assignment->navigationMenuItem->getLocalizedTitle()|escape}
+                    {$itemTitle|escape}
                     {if $assignment->navigationMenuItem->getData('encountersTaskCount') !== null}
                         <span class="task_count">{$assignment->navigationMenuItem->getData('encountersTaskCount')|intval}</span>
                     {/if}
                 </a>
                 {if $useDefaultAbout || $assignment->navigationMenuItem->getIsChildVisible()}
-                    <button type="button" class="encounters-submenu-toggle" data-encounters-submenu aria-expanded="false" aria-controls="{$id|escape}-submenu-{$smarty.foreach.encountersMenu.iteration}" aria-label="{translate|escape key="plugins.themes.encounters.submenu" title=$assignment->navigationMenuItem->getLocalizedTitle()}" hidden>
+                    <button type="button" class="encounters-submenu-toggle" data-encounters-submenu aria-expanded="false" aria-controls="{$id|escape}-submenu-{$smarty.foreach.encountersMenu.iteration}" aria-label="{translate|escape key="plugins.themes.encounters.submenu" title=$itemTitle}" hidden>
                         <img src="{$encountersThemeUrl|escape}/images/menu-chevron.svg" width="8" height="8" alt="">
                     </button>
                     <ul id="{$id|escape}-submenu-{$smarty.foreach.encountersMenu.iteration}">
@@ -30,9 +33,12 @@
                         {else}
                             {foreach item=child from=$assignment->children}
                                 {if $child->navigationMenuItem->getIsDisplayed()}
+                                    {assign var=childTitle value=$child->navigationMenuItem->getLocalizedTitle()}
+                                    {assign var=childTitleKey value=$activeTheme->getNavigationTitleKey($child->navigationMenuItem, $currentLocale)}
+                                    {if $childTitleKey}{capture assign=childTitle}{translate key=$childTitleKey}{/capture}{/if}
                                     <li class="{$liClass|escape}">
                                         <a href="{$child->navigationMenuItem->getUrl()|escape}">
-                                            {$child->navigationMenuItem->getLocalizedTitle()|escape}
+                                            {$childTitle|escape}
                                             {if $child->navigationMenuItem->getData('encountersTaskCount') !== null}
                                                 <span class="task_count">{$child->navigationMenuItem->getData('encountersTaskCount')|intval}</span>
                                             {/if}

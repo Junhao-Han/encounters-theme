@@ -106,7 +106,13 @@ msgid "plugins.themes.encounters.monographSeries"
 msgstr "Monograph Series"
 
 msgid "plugins.themes.encounters.monographDescription"
-msgstr "Monograph Series description"
+msgstr "Monograph Series description — English"
+
+msgid "plugins.themes.encounters.monographDescriptionEs"
+msgstr "Monograph Series description — Spanish"
+
+msgid "plugins.themes.encounters.monographDescriptionFr"
+msgstr "Monograph Series description — French"
 
 msgid "plugins.themes.encounters.monographUrl"
 msgstr "Monograph Series website"

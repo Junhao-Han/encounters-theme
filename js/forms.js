@@ -1,5 +1,18 @@
-/** Progressive enhancement for the shared OJS registration form. */
+/** Progressive enhancement for shared OJS forms. */
 (() => {
+    // OJS 3.5 generates English month names in the search date filters.
+    ['dateFromMonth', 'dateToMonth'].forEach((id) => {
+        const select = document.getElementById(id);
+        if (!select) return;
+        const formatter = new Intl.DateTimeFormat(document.documentElement.lang, {month: 'short', timeZone: 'UTC'});
+        [...select.options].forEach((option) => {
+            const month = Number(option.value);
+            if (Number.isInteger(month) && month >= 1 && month <= 12) {
+                option.textContent = formatter.format(new Date(Date.UTC(2020, month - 1, 1)));
+            }
+        });
+    });
+
     const reviewer = document.getElementById('reviewerOptinGroup');
     const interests = document.getElementById('reviewerInterests');
     if (reviewer && interests) {

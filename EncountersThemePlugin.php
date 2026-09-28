@@ -86,6 +86,14 @@ class EncountersThemePlugin extends ThemePlugin
             'label' => __('plugins.themes.encounters.monographDescription'),
             'default' => "Supported by Queen's University Library, THE is an open access series exploring the history, philosophy, and sociology of education.",
         ]);
+        $this->addOption('monographDescriptionEs', 'FieldTextarea', [
+            'label' => __('plugins.themes.encounters.monographDescriptionEs'),
+            'default' => "Con el apoyo de la Biblioteca de Queen's University, THE es una serie de acceso abierto que explora la historia, la filosofía y la sociología de la educación.",
+        ]);
+        $this->addOption('monographDescriptionFr', 'FieldTextarea', [
+            'label' => __('plugins.themes.encounters.monographDescriptionFr'),
+            'default' => 'Soutenue par la bibliothèque de l’Université Queen’s, THE est une collection en libre accès consacrée à l’histoire, à la philosophie et à la sociologie de l’éducation.',
+        ]);
         $this->addOption('monographUrl', 'FieldText', [
             'label' => __('plugins.themes.encounters.monographUrl'),
             'description' => __('plugins.themes.encounters.monographUrl.description'),
@@ -143,6 +151,36 @@ class EncountersThemePlugin extends ThemePlugin
             default => 'introductionDescription',
         };
         return trim((string) $this->getOption($option));
+    }
+
+    public function getMonographDescription(string $locale): string
+    {
+        $option = match (strtolower(substr($locale, 0, 2))) {
+            'es' => 'monographDescriptionEs',
+            'fr' => 'monographDescriptionFr',
+            default => 'monographDescription',
+        };
+        return trim((string) $this->getOption($option));
+    }
+
+    public function getNavigationTitleKey(NavigationMenuItem $item, string $locale): ?string
+    {
+        if ($item->getData('encountersTitleLocaleKey')) {
+            return $item->getData('encountersTitleLocaleKey');
+        }
+        $key = $item->getTitleLocaleKey();
+        if (!$item->getTitle($locale) && $key && !str_contains($key, '{$')) {
+            return $key;
+        }
+
+        if ($item->getType() === NavigationMenuItem::NMI_TYPE_REMOTE_URL
+            && $item->getLocalizedTitle() === 'Monograph Series'
+            && rtrim((string) $item->getUrl(), '/') === rtrim((string) $this->getOption('monographUrl'), '/')
+            && $this->getOption('monographUrl')) {
+            return 'plugins.themes.encounters.monographSeries';
+        }
+
+        return null;
     }
 
     public function getOptionsConfig()
@@ -213,6 +251,8 @@ class EncountersThemePlugin extends ThemePlugin
         // OJS requests this fragment after checking the user's dashboard roles.
         // Keep its title as text and render the count separately in navigation.
         $menuItem->setData('encountersTaskCount', (int) $templateManager->getTemplateVars('unreadNotificationCount'));
+        // OJS will copy this fragment into the current locale's title.
+        $menuItem->setData('encountersTitleLocaleKey', $this->getNavigationTitleKey($menuItem, (string) $templateManager->getTemplateVars('currentLocale')));
         $args[4] = $menuItem->getLocalizedTitle();
         return Hook::ABORT;
     }
@@ -299,7 +339,7 @@ class EncountersThemePlugin extends ThemePlugin
             'encountersRecentArticles' => $recentArticles,
             'encountersShowAnnouncements' => (bool) $context->getData('enableAnnouncements'),
             'encountersAnnouncements' => $templateManager->getTemplateVars('announcements')?->all() ?? [],
-            'encountersMonographDescription' => trim((string) $this->getOption('monographDescription')),
+            'encountersMonographDescription' => $this->getMonographDescription(Locale::getLocale()),
             'encountersMonographUrl' => $monographUrl,
         ]);
 

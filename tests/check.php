@@ -36,7 +36,26 @@ check(!str_contains($css, '/plugins/themes/default/'), 'Compiled CSS references 
 
 $translationLoader = new Gettext\Loader\PoLoader();
 $translations = $translationLoader->loadFile($pluginRoot . '/locale/en/locale.po');
-$ojsTranslations = $translationLoader->loadFile($ojsRoot . '/locale/en/locale.po');
+$catalogs = [];
+foreach (['en', 'es', 'fr'] as $locale) {
+    $files = array_merge(glob($ojsRoot . '/lib/pkp/locale/' . $locale . '/*.po'), glob($ojsRoot . '/locale/' . $locale . '/*.po'), [$pluginRoot . '/locale/' . $locale . '/locale.po']);
+    foreach ($files as $file) {
+        foreach ($translationLoader->loadFile($file) as $translation) {
+            if ($translation->getTranslation() !== '') {
+                $catalogs[$locale][$translation->getOriginal()] = $translation->getTranslation();
+            }
+        }
+    }
+}
+foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pluginRoot . '/templates', FilesystemIterator::SKIP_DOTS)) as $file) {
+    if ($file->getExtension() !== 'tpl') continue;
+    preg_match_all('/\{translate\b[^}]*\bkey=["\']([^"\']+)["\']/', file_get_contents($file->getPathname()), $keys);
+    foreach ($keys[1] as $key) {
+        foreach (['en', 'es', 'fr'] as $locale) {
+            check(isset($catalogs[$locale][$key]), 'Missing frontend translation in ' . $locale . ': ' . $key);
+        }
+    }
+}
 foreach (['fr', 'es'] as $locale) {
     $localized = $translationLoader->loadFile($pluginRoot . '/locale/' . $locale . '/locale.po');
     foreach ($translations as $translation) {
@@ -76,6 +95,9 @@ class FixtureTheme extends \APP\plugins\themes\encounters\EncountersThemePlugin
             'introductionDescription' => "Education & Humanities\n<script>bad</script>",
             'introductionDescriptionEs' => "Educación & Humanidades\n<script>bad</script>",
             'introductionDescriptionFr' => "Éducation & Humanités\n<script>bad</script>",
+            'monographDescription' => 'History & <education>',
+            'monographDescriptionEs' => 'Historia & <educación>',
+            'monographDescriptionFr' => 'Histoire & <éducation>',
             default => '',
         };
     }
@@ -101,12 +123,12 @@ class FixtureIssue
 
 class FixtureMenuItem extends \PKP\navigationMenu\NavigationMenuItem
 {
-    public function __construct(private string $title, private bool $visible = true, private bool $children = false)
+    public function __construct(private string $title, private bool $visible = true, private bool $children = false, private string $url = '/about?x=1&y=2')
     {
         $this->setType(self::NMI_TYPE_CUSTOM);
     }
     public function getLocalizedTitle(): string { return $this->title; }
-    public function getUrl(): string { return '/about?x=1&y=2'; }
+    public function getUrl(): string { return $this->url; }
     public function getIsDisplayed(): bool { return $this->visible; }
     public function getIsChildVisible(): bool { return $this->children; }
 }
@@ -130,8 +152,9 @@ try {
         $ojsRoot . '/lib/pkp/templates',
     ]);
     $smarty->error_reporting = E_ALL & ~E_DEPRECATED;
-    $smarty->registerPlugin('function', 'translate', static function (array $params) use ($translations, $ojsTranslations): string {
-        $message = $translations->find(null, $params['key'])?->getTranslation() ?: $ojsTranslations->find(null, $params['key'])?->getTranslation() ?: $params['key'];
+    $smarty->registerPlugin('function', 'translate', static function (array $params) use ($catalogs, $smarty): string {
+        $locale = substr($smarty->getTemplateVars('currentLocale') ?? 'en', 0, 2);
+        $message = $catalogs[$locale][$params['key']] ?? $catalogs['en'][$params['key']] ?? $params['key'];
         foreach ($params as $key => $value) {
             if ($key !== 'key') {
                 $message = str_replace('{$' . $key . '}', (string) $value, $message);
@@ -214,6 +237,17 @@ try {
     check(str_contains($html, '<strong>proposal</strong>'), 'Announcement summary formatting is lost');
     check(str_contains($html, 'https://example.org/series?a=1&amp;b=2'), 'Series URL is not escaped');
     check(str_contains($html, 'History &amp; &lt;script&gt;bad&lt;/script&gt;'), 'Series description is not escaped');
+
+    foreach (['en' => 'History &amp; &lt;education&gt;', 'es' => 'Historia &amp; &lt;educación&gt;', 'fr' => 'Histoire &amp; &lt;éducation&gt;'] as $locale => $description) {
+        $smarty->assign(['currentLocale' => $locale, 'encountersMonographDescription' => (new FixtureTheme())->getMonographDescription($locale)]);
+        $localizedHome = $smarty->fetch('frontend/pages/indexJournal.tpl');
+        check(str_contains($localizedHome, '<p>' . $description . '</p>'), 'Monograph description is not localized or escaped: ' . $locale);
+        foreach (['recentIssues', 'recentArticles', 'exploreSeries'] as $key) {
+            check(str_contains($localizedHome, $catalogs[$locale]['plugins.themes.encounters.' . $key]), 'Homepage section or button is not localized: ' . $key);
+        }
+    }
+    check((new FixtureTheme(overrides: ['monographDescriptionFr' => '']))->getMonographDescription('fr') === '', 'Empty monograph description falls back to English');
+    $smarty->assign(['currentLocale' => 'en', 'encountersMonographDescription' => 'History & <script>bad</script>']);
 
     $theme = new FixtureTheme();
     foreach (['en' => 'Education &amp; Humanities', 'es' => 'Educación &amp; Humanidades', 'fr' => 'Éducation &amp; Humanités', 'es_MX' => 'Educación &amp; Humanidades', 'fr-CA' => 'Éducation &amp; Humanités', 'de' => 'Education &amp; Humanities'] as $locale => $description) {
@@ -333,6 +367,39 @@ try {
     $siteAbout = $smarty->fetch('frontend/components/navigationMenu.tpl');
     check(str_contains($siteAbout, 'Custom child') && !str_contains($siteAbout, 'Editorial Team'), 'Default About menu affects the site menu');
     $smarty->assign('currentJournal', $journal);
+    $navigationKeys = ['navigation.about', 'about.submissions', 'navigation.current', 'navigation.archives', 'manager.announcements', 'navigation.login', 'navigation.register', 'navigation.dashboard', 'common.viewProfile', 'navigation.admin', 'user.logOut'];
+    $localizedItems = [];
+    foreach ($navigationKeys as $key) {
+        $item = new FixtureMenuItem($catalogs['en'][$key], children: true);
+        $item->setTitleLocaleKey($key);
+        $item->setTitle($catalogs['en'][$key], 'en');
+        $localizedItems[] = (object) ['navigationMenuItem' => $item, 'children' => [(object) ['navigationMenuItem' => clone $item]]];
+    }
+    $series = new FixtureMenuItem('Monograph Series', url: 'https://example.org/series/');
+    $series->setType(\PKP\navigationMenu\NavigationMenuItem::NMI_TYPE_REMOTE_URL);
+    foreach (['en', 'es', 'fr'] as $locale) $series->setTitle('Monograph Series', $locale);
+    $localizedItems[] = (object) ['navigationMenuItem' => $series, 'children' => []];
+    $smarty->assign(['activeTheme' => new FixtureTheme(overrides: ['monographUrl' => 'https://example.org/series']), 'navigationMenu' => (object) ['menuTree' => $localizedItems]]);
+    foreach (['en', 'es', 'fr'] as $locale) {
+        $smarty->assign('currentLocale', $locale);
+        $localizedMenu = $smarty->fetch('frontend/components/navigationMenu.tpl');
+        foreach ($navigationKeys as $key) {
+            $label = htmlspecialchars($catalogs[$locale][$key], ENT_QUOTES);
+            check(substr_count($localizedMenu, $label) >= 2, 'Navigation or child label is not localized with English-only form titles: ' . $locale . ' ' . $key);
+        }
+        check(str_contains($localizedMenu, $catalogs[$locale]['plugins.themes.encounters.monographSeries']), 'Monograph Series menu label is not localized');
+    }
+    $customTitle = new FixtureMenuItem('Notre équipe & <staff>');
+    $customTitle->setTitleLocaleKey('navigation.about');
+    $customTitle->setTitle('Notre équipe & <staff>', 'fr');
+    $username = new FixtureMenuItem('junhao');
+    $username->setTitleLocaleKey('{$loggedInUsername}');
+    $unrelated = new FixtureMenuItem('Monograph Series', url: 'https://example.org/unrelated');
+    $unrelated->setType(\PKP\navigationMenu\NavigationMenuItem::NMI_TYPE_REMOTE_URL);
+    $smarty->assign(['currentLocale' => 'fr', 'navigationMenu' => (object) ['menuTree' => array_map(fn ($item) => (object) ['navigationMenuItem' => $item, 'children' => []], [$customTitle, $username, $unrelated])]]);
+    $customMenu = $smarty->fetch('frontend/components/navigationMenu.tpl');
+    check(str_contains($customMenu, 'Notre équipe &amp; &lt;staff&gt;') && str_contains($customMenu, 'junhao') && str_contains($customMenu, 'Monograph Series'), 'Custom translations, usernames or unrelated links are overridden');
+    $smarty->assign(['currentLocale' => 'en', 'activeTheme' => new FixtureTheme(), 'navigationMenu' => $aboutMenu]);
     $aboutMenu->menuTree[0]->navigationMenuItem = new FixtureMenuItem('About without children');
     $aboutMenu->menuTree[0]->navigationMenuItem->setType(\PKP\navigationMenu\NavigationMenuItem::NMI_TYPE_ABOUT);
     $aboutMenu->menuTree[0]->children = [];
@@ -341,6 +408,19 @@ try {
 
     // Exercise the fetch hook at the same point where OJS decorates a dashboard title.
     \PKP\plugins\Hook::add('TemplateManager::fetch', $plugin->prepareDashboardMenuItem(...));
+    foreach (['es', 'fr'] as $locale) {
+        $translatedDashboard = new FixtureMenuItem('Dashboard');
+        $translatedDashboard->setTitleLocaleKey('navigation.dashboard');
+        $translatedDashboard->setTitle('Dashboard', 'en');
+        $smarty->assign(['currentLocale' => $locale, 'navigationMenuItem' => $translatedDashboard, 'unreadNotificationCount' => 3]);
+        $result = null;
+        \PKP\plugins\Hook::call('TemplateManager::fetch', [$smarty, 'frontend/components/navigationMenus/dashboardMenuItem.tpl', null, null, &$result]);
+        $translatedDashboard->setTitle($result, $locale);
+        $smarty->assign('navigationMenu', (object) ['menuTree' => [(object) ['navigationMenuItem' => $translatedDashboard, 'children' => []]]]);
+        $localizedDashboard = $smarty->fetch('frontend/components/navigationMenu.tpl');
+        check(str_contains($localizedDashboard, $catalogs[$locale]['navigation.dashboard']) && str_contains($localizedDashboard, '<span class="task_count">3</span>'), 'Dashboard fragment loses its translation or notification count');
+    }
+    $smarty->assign('currentLocale', 'en');
     $dashboard = new FixtureMenuItem('Dashboard & "tasks" <img src=x onerror=alert(1)>', true, true);
     $childDashboard = new FixtureMenuItem('Submissions & reviews');
     foreach ([[$dashboard, 3], [$childDashboard, 0]] as [$menuItem, $count]) {
@@ -390,6 +470,7 @@ try {
     echo "PASS: no parent-theme LESS imports; disclosure markup and static highlights.\n";
     echo "PASS: dashboard notification badges, menu title escaping and logo alternative text.\n";
     echo "PASS: default About menu, custom menu option and menu isolation.\n";
+    echo "PASS: three-language navigation, homepage content and all theme template translation keys.\n";
     echo "Installation, database filtering and browser appearance still require live testing.\n";
 } finally {
     $items = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($temporary, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST);
