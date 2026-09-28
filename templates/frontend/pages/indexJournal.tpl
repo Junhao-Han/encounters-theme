@@ -70,7 +70,7 @@
                         <li>
                             <h3><a href="{url page="article" op="view" path=$recentArticle.path}">{$recentArticle.title|escape}</a></h3>
                             {if $recentArticle.date}
-                                <time class="encounters-article-date" datetime="{$recentArticle.date|date_format:'Y-m-d'|escape}">{$recentArticle.date|date_format:$dateFormatLong|escape}</time>
+                                <time class="encounters-article-date" datetime="{$recentArticle.date|date_format:'Y-m-d'|escape}">{$activeTheme->formatArticleDate($recentArticle.date, $currentLocale)|escape}</time>
                             {/if}
                         </li>
                     {/foreach}

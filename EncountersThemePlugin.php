@@ -15,6 +15,7 @@ use APP\journal\Journal;
 use APP\submission\Collector as SubmissionCollector;
 use APP\submission\Submission;
 use APP\template\TemplateManager;
+use Carbon\Carbon;
 use PKP\config\Config;
 use PKP\facades\Locale;
 use PKP\i18n\LocaleMetadata;
@@ -163,6 +164,11 @@ class EncountersThemePlugin extends ThemePlugin
         return trim((string) $this->getOption($option));
     }
 
+    public function formatArticleDate(string $date, string $locale): string
+    {
+        return Carbon::parse($date)->locale(str_replace('-', '_', $locale))->isoFormat('LL');
+    }
+
     public function getNavigationTitleKey(NavigationMenuItem $item, string $locale): ?string
     {
         if ($item->getData('encountersTitleLocaleKey')) {
@@ -298,7 +304,7 @@ class EncountersThemePlugin extends ThemePlugin
             $recentIssues = Repo::issue()->getCollector()
                 ->filterByContextIds([$context->getId()])
                 ->filterByPublished(true)
-                ->orderBy(Collector::ORDERBY_DATE_PUBLISHED)
+                ->orderBy(Collector::ORDERBY_SEQUENCE)
                 ->limit(3)
                 ->getMany()
                 ->all();

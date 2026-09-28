@@ -238,10 +238,13 @@ try {
     check(str_contains($html, 'https://example.org/series?a=1&amp;b=2'), 'Series URL is not escaped');
     check(str_contains($html, 'History &amp; &lt;script&gt;bad&lt;/script&gt;'), 'Series description is not escaped');
 
+    $articleDates = ['en' => 'September 9, 2026', 'es' => '9 de septiembre de 2026', 'fr' => '9 septembre 2026'];
     foreach (['en' => 'History &amp; &lt;education&gt;', 'es' => 'Historia &amp; &lt;educación&gt;', 'fr' => 'Histoire &amp; &lt;éducation&gt;'] as $locale => $description) {
         $smarty->assign(['currentLocale' => $locale, 'encountersMonographDescription' => (new FixtureTheme())->getMonographDescription($locale)]);
         $localizedHome = $smarty->fetch('frontend/pages/indexJournal.tpl');
         check(str_contains($localizedHome, '<p>' . $description . '</p>'), 'Monograph description is not localized or escaped: ' . $locale);
+        check(str_contains($localizedHome, 'datetime="2026-09-09">' . $articleDates[$locale] . '</time>'), 'Article date does not follow the language format: ' . $locale);
+        check(substr_count($localizedHome, 'class="encounters-article-date"') === 1, 'Missing article date is replaced with a fabricated date');
         foreach (['recentIssues', 'recentArticles', 'exploreSeries'] as $key) {
             check(str_contains($localizedHome, $catalogs[$locale]['plugins.themes.encounters.' . $key]), 'Homepage section or button is not localized: ' . $key);
         }
