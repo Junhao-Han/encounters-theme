@@ -16,7 +16,13 @@ msgid "plugins.themes.encounters.mastheadTitle"
 msgstr "Short journal name in the header"
 
 msgid "plugins.themes.encounters.mastheadTagline"
-msgstr "Journal subtitle in the header"
+msgstr "Journal subtitle in the header — English"
+
+msgid "plugins.themes.encounters.mastheadTaglineEs"
+msgstr "Journal subtitle in the header — Spanish"
+
+msgid "plugins.themes.encounters.mastheadTaglineFr"
+msgstr "Journal subtitle in the header — French"
 
 msgid "plugins.themes.encounters.aboutMenu"
 msgstr "About submenu"
@@ -43,7 +49,13 @@ msgid "plugins.themes.encounters.introductionTitleFr"
 msgstr "Homepage journal name — French"
 
 msgid "plugins.themes.encounters.introductionDescription"
-msgstr "Homepage introduction"
+msgstr "Homepage introduction — English"
+
+msgid "plugins.themes.encounters.introductionDescriptionEs"
+msgstr "Homepage introduction — Spanish"
+
+msgid "plugins.themes.encounters.introductionDescriptionFr"
+msgstr "Homepage introduction — French"
 
 msgid "plugins.themes.encounters.recentIssues"
 msgstr "Recent Issues"

@@ -62,15 +62,20 @@ class FixtureJournal
     }
 }
 
-class FixtureTheme
+class FixtureTheme extends \APP\plugins\themes\encounters\EncountersThemePlugin
 {
-    public function __construct(private string $aboutMenu = 'default') {}
-    public function getOption(string $name): string
+    public function __construct(private string $aboutMenu = 'default', private array $overrides = []) {}
+    public function getOption($name): string
     {
         if ($name === 'aboutMenu') return $this->aboutMenu;
-        return match ($name) {
+        return $this->overrides[$name] ?? match ($name) {
             'mastheadTitle' => 'Encounters',
             'mastheadTagline' => 'Education & Humanities',
+            'mastheadTaglineEs' => 'Educación <Humanidades>',
+            'mastheadTaglineFr' => 'Éducation & Humanités',
+            'introductionDescription' => "Education & Humanities\n<script>bad</script>",
+            'introductionDescriptionEs' => "Educación & Humanidades\n<script>bad</script>",
+            'introductionDescriptionFr' => "Éducation & Humanités\n<script>bad</script>",
             default => '',
         };
     }
@@ -210,6 +215,17 @@ try {
     check(str_contains($html, 'https://example.org/series?a=1&amp;b=2'), 'Series URL is not escaped');
     check(str_contains($html, 'History &amp; &lt;script&gt;bad&lt;/script&gt;'), 'Series description is not escaped');
 
+    $theme = new FixtureTheme();
+    foreach (['en' => 'Education &amp; Humanities', 'es' => 'Educación &amp; Humanidades', 'fr' => 'Éducation &amp; Humanités', 'es_MX' => 'Educación &amp; Humanidades', 'fr-CA' => 'Éducation &amp; Humanités', 'de' => 'Education &amp; Humanities'] as $locale => $description) {
+        $smarty->assign(['currentLocale' => $locale, 'encountersHeroDescription' => $theme->getIntroductionDescription($locale)]);
+        $localizedHome = $smarty->fetch('frontend/pages/indexJournal.tpl');
+        check(str_contains($localizedHome, '<div class="encounters-description">' . $description . "<br />\n&lt;script&gt;bad&lt;/script&gt;</div>"), 'Hero introduction does not follow the locale or preserve safe line breaks: ' . $locale);
+    }
+    $emptyIntroduction = new FixtureTheme(overrides: ['introductionDescriptionFr' => '']);
+    $smarty->assign('encountersHeroDescription', $emptyIntroduction->getIntroductionDescription('fr'));
+    check(!str_contains($smarty->fetch('frontend/pages/indexJournal.tpl'), 'class="encounters-description"'), 'Empty introduction falls back to another language');
+    $smarty->assign(['currentLocale' => 'en', 'encountersHeroDescription' => $theme->getIntroductionDescription('en')]);
+
     $smarty->assign('homepageImage', ['uploadName' => 'hero image.jpg', 'altText' => '']);
     $imageWithoutAlt = $smarty->fetch('frontend/pages/indexJournal.tpl');
     check(str_contains($imageWithoutAlt, 'src="/public/journals/1/hero%20image.jpg" alt="Issue &lt;script&gt;bad&lt;/script&gt;"'), 'Linked hero image has no accessible issue name');
@@ -257,6 +273,15 @@ try {
     $header = $smarty->fetch('frontend/components/header.tpl');
     check(str_contains($header, 'alt="Test site"'), 'Logo alternative text does not fall back to the site title');
     $smarty->assign(['displayPageHeaderLogo' => null, 'displayPageHeaderTitle' => $journal->getLocalizedName()]);
+
+    foreach (['en' => 'Education &amp; Humanities', 'es' => 'Educación &lt;Humanidades&gt;', 'fr' => 'Éducation &amp; Humanités', 'es_MX' => 'Educación &lt;Humanidades&gt;', 'fr-CA' => 'Éducation &amp; Humanités', 'de' => 'Education &amp; Humanities'] as $locale => $tagline) {
+        $smarty->assign(['currentLocale' => $locale, 'requestedPage' => 'about']);
+        $header = $smarty->fetch('frontend/components/header.tpl');
+        check(str_contains($header, '<span class="encounters-tagline">' . $tagline . '</span>'), 'Header subtitle does not follow the locale or is not escaped: ' . $locale);
+    }
+    $smarty->assign(['activeTheme' => new FixtureTheme(overrides: ['mastheadTaglineFr' => '']), 'currentLocale' => 'fr']);
+    check(!str_contains($smarty->fetch('frontend/components/header.tpl'), 'class="encounters-tagline"'), 'Empty subtitle falls back to another language');
+    $smarty->assign(['activeTheme' => new FixtureTheme(), 'currentLocale' => 'en', 'requestedPage' => 'index']);
 
     $smarty->assign([
         'navigationMenu' => (object) ['menuTree' => [

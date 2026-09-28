@@ -16,6 +16,7 @@ use APP\submission\Collector as SubmissionCollector;
 use APP\submission\Submission;
 use APP\template\TemplateManager;
 use PKP\config\Config;
+use PKP\facades\Locale;
 use PKP\i18n\LocaleMetadata;
 use PKP\navigationMenu\NavigationMenuItem;
 use PKP\plugins\Hook;
@@ -32,6 +33,14 @@ class EncountersThemePlugin extends ThemePlugin
         $this->addOption('mastheadTagline', 'FieldText', [
             'label' => __('plugins.themes.encounters.mastheadTagline'),
             'default' => 'In Education, Humanities, and Technology',
+        ]);
+        $this->addOption('mastheadTaglineEs', 'FieldText', [
+            'label' => __('plugins.themes.encounters.mastheadTaglineEs'),
+            'default' => 'En Educación, Humanidades y Tecnología',
+        ]);
+        $this->addOption('mastheadTaglineFr', 'FieldText', [
+            'label' => __('plugins.themes.encounters.mastheadTaglineFr'),
+            'default' => 'En éducation, Humanités et technologie',
         ]);
         $this->addOption('aboutMenu', 'FieldOptions', [
             'type' => 'radio',
@@ -58,6 +67,14 @@ class EncountersThemePlugin extends ThemePlugin
         $this->addOption('introductionDescription', 'FieldTextarea', [
             'label' => __('plugins.themes.encounters.introductionDescription'),
             'default' => 'An international, interdisciplinary journal exploring the intersections of Education, Humanities, and Technology',
+        ]);
+        $this->addOption('introductionDescriptionEs', 'FieldTextarea', [
+            'label' => __('plugins.themes.encounters.introductionDescriptionEs'),
+            'default' => 'Una revista internacional e interdisciplinaria que explora las intersecciones entre la Educación, las Humanidades y la Tecnología',
+        ]);
+        $this->addOption('introductionDescriptionFr', 'FieldTextarea', [
+            'label' => __('plugins.themes.encounters.introductionDescriptionFr'),
+            'default' => 'Une revue internationale et interdisciplinaire explorant les intersections entre l’Éducation, les Humanités et la Technologie',
         ]);
         $this->addOption('heroIssueId', 'FieldSelect', [
             'label' => __('plugins.themes.encounters.heroIssue'),
@@ -106,6 +123,26 @@ class EncountersThemePlugin extends ThemePlugin
         Hook::add('TemplateManager::display', $this->prepareTemplate(...));
         Hook::add('TemplateManager::fetch', $this->prepareDashboardMenuItem(...));
         Hook::add('Locale::translate', $this->translateSearchResults(...));
+    }
+
+    public function getMastheadTagline(string $locale): string
+    {
+        $option = match (strtolower(substr($locale, 0, 2))) {
+            'es' => 'mastheadTaglineEs',
+            'fr' => 'mastheadTaglineFr',
+            default => 'mastheadTagline',
+        };
+        return trim((string) $this->getOption($option));
+    }
+
+    public function getIntroductionDescription(string $locale): string
+    {
+        $option = match (strtolower(substr($locale, 0, 2))) {
+            'es' => 'introductionDescriptionEs',
+            'fr' => 'introductionDescriptionFr',
+            default => 'introductionDescription',
+        };
+        return trim((string) $this->getOption($option));
     }
 
     public function getOptionsConfig()
@@ -254,7 +291,7 @@ class EncountersThemePlugin extends ThemePlugin
         }
         $templateManager->assign([
             'encountersHeroTitles' => $titles,
-            'encountersHeroDescription' => trim((string) $this->getOption('introductionDescription')),
+            'encountersHeroDescription' => $this->getIntroductionDescription(Locale::getLocale()),
             'encountersCurrentIssue' => $currentIssue,
             'encountersHeroIssue' => $heroIssue,
             'encountersRecentIssues' => $recentIssues,
