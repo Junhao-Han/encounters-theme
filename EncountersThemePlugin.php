@@ -63,7 +63,7 @@ class EncountersThemePlugin extends ThemePlugin
         ]);
         $this->addOption('introductionTitleFr', 'FieldText', [
             'label' => __('plugins.themes.encounters.introductionTitleFr'),
-            'default' => 'Rencontres en éducation, sciences humaines et technologie',
+            'default' => 'Rencontres en éducation, Humanités et technologie',
         ]);
         $this->addOption('introductionDescription', 'FieldTextarea', [
             'label' => __('plugins.themes.encounters.introductionDescription'),
@@ -269,6 +269,9 @@ class EncountersThemePlugin extends ThemePlugin
         if (!str_starts_with((string) $template, 'frontend/')) {
             return Hook::CONTINUE;
         }
+
+        // Apply shared OJS wording only on the public theme pages.
+        Locale::registerPath($this->getPluginPath() . '/locale/frontend', 1);
 
         $context = Application::get()->getRequest()->getContext();
         $templateManager->assign('encountersThemeUrl', $this->_getBaseUrl());

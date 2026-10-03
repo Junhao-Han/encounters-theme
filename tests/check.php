@@ -38,7 +38,7 @@ $translationLoader = new Gettext\Loader\PoLoader();
 $translations = $translationLoader->loadFile($pluginRoot . '/locale/en/locale.po');
 $catalogs = [];
 foreach (['en', 'es', 'fr'] as $locale) {
-    $files = array_merge(glob($ojsRoot . '/lib/pkp/locale/' . $locale . '/*.po'), glob($ojsRoot . '/locale/' . $locale . '/*.po'), [$pluginRoot . '/locale/' . $locale . '/locale.po']);
+    $files = array_merge(glob($ojsRoot . '/lib/pkp/locale/' . $locale . '/*.po'), glob($ojsRoot . '/locale/' . $locale . '/*.po'), [$pluginRoot . '/locale/' . $locale . '/locale.po'], glob($pluginRoot . '/locale/frontend/' . $locale . '/*.po'));
     foreach ($files as $file) {
         foreach ($translationLoader->loadFile($file) as $translation) {
             if ($translation->getTranslation() !== '') {
@@ -47,13 +47,31 @@ foreach (['en', 'es', 'fr'] as $locale) {
         }
     }
 }
-foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pluginRoot . '/templates', FilesystemIterator::SKIP_DOTS)) as $file) {
-    if ($file->getExtension() !== 'tpl') continue;
-    preg_match_all('/\{translate\b[^}]*\bkey=["\']([^"\']+)["\']/', file_get_contents($file->getPathname()), $keys);
-    foreach ($keys[1] as $key) {
-        foreach (['en', 'es', 'fr'] as $locale) {
-            check(isset($catalogs[$locale][$key]), 'Missing frontend translation in ' . $locale . ': ' . $key);
+foreach ([$pluginRoot . '/templates', $ojsRoot . '/templates/frontend', $ojsRoot . '/lib/pkp/templates/frontend'] as $templateRoot) {
+    foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($templateRoot, FilesystemIterator::SKIP_DOTS)) as $file) {
+        if ($file->getExtension() !== 'tpl') continue;
+        preg_match_all('/\b(?:key|pageTitle|currentTitleKey|messageKey|sectionTitleKey)=["\']([^"\']+)["\']/', file_get_contents($file->getPathname()), $keys);
+        foreach ($keys[1] as $key) {
+            if ($templateRoot === $pluginRoot . '/templates') {
+                check(isset($catalogs['en'][$key]), 'Missing English theme translation: ' . $key);
+            }
+            if (!isset($catalogs['en'][$key])) continue;
+            foreach (['en', 'es', 'fr'] as $locale) {
+                check(isset($catalogs[$locale][$key]), 'Missing frontend translation in ' . $locale . ': ' . $key);
+            }
         }
+    }
+}
+foreach (['fr', 'es'] as $locale) {
+    foreach ($translationLoader->loadFile($pluginRoot . '/locale/frontend/' . $locale . '/locale.po') as $translation) {
+        $key = $translation->getOriginal();
+        check(isset($catalogs['en'][$key]), 'Unknown OJS translation key: ' . $key);
+        check($translation->getTranslation() !== '', 'Empty frontend translation: ' . $key);
+        preg_match_all('/\{\$\w+\}/', $catalogs['en'][$key], $expected);
+        preg_match_all('/\{\$\w+\}/', $translation->getTranslation(), $actual);
+        sort($expected[0]);
+        sort($actual[0]);
+        check($expected[0] === $actual[0], 'Changed frontend translation placeholders: ' . $key);
     }
 }
 foreach (['fr', 'es'] as $locale) {
@@ -473,7 +491,7 @@ try {
     echo "PASS: no parent-theme LESS imports; disclosure markup and static highlights.\n";
     echo "PASS: dashboard notification badges, menu title escaping and logo alternative text.\n";
     echo "PASS: default About menu, custom menu option and menu isolation.\n";
-    echo "PASS: three-language navigation, homepage content and all theme template translation keys.\n";
+    echo "PASS: three-language navigation, homepage content and shared frontend translation keys.\n";
     echo "Installation, database filtering and browser appearance still require live testing.\n";
 } finally {
     $items = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($temporary, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST);

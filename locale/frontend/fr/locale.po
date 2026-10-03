@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Encounters 0.1.0\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "announcement.announcements"
+msgstr "Annonces"
+
+msgid "announcement.announcementsHome"
+msgstr "Annonces"
+
+msgid "announcement.moreAnnouncements"
+msgstr "Voir plus d’annonces"
+
+msgid "announcement.posted"
+msgstr "Date de publication"
+
+msgid "announcement.postedOn"
+msgstr "Publiée le {$postDate}"
+
+msgid "common.navigation.site"
+msgstr "Navigation du site"
+
+msgid "common.navigation.user"
+msgstr "Menu utilisateur"
+
+msgid "navigation.skip.description"
+msgstr "Liens d’accès rapide"
+
+msgid "submissions.published"
+msgstr "Date de publication"
+
+msgid "about.authorGuidelines"
+msgstr "Directives aux auteurs et autrices"
+
+msgid "article.authors"
+msgstr "Auteurs et autrices"
+
+msgid "user.login.rememberUsernameAndPassword"
+msgstr "Rester connecté"
