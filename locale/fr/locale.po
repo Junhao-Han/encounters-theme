@@ -15,6 +15,30 @@ msgstr "Un thème autonome pour la revue Encounters."
 msgid "plugins.themes.encounters.mastheadTitle"
 msgstr "Nom court de la revue dans l’en-tête"
 
+msgid "plugins.themes.encounters.mastheadLogo"
+msgstr "Logo de l’en-tête"
+
+msgid "plugins.themes.encounters.mastheadLogo.description"
+msgstr "Choisir le logo inclus ou celui de la revue téléversé dans Apparence > Configuration. Le titre et le sous-titre restent visibles. Si aucun logo n’a été téléversé, celui d’Encounters est utilisé."
+
+msgid "plugins.themes.encounters.mastheadLogo.default"
+msgstr "Logo d’Encounters"
+
+msgid "plugins.themes.encounters.mastheadLogo.uploaded"
+msgstr "Logo téléversé de la revue"
+
+msgid "plugins.themes.encounters.sidebar"
+msgstr "Barre latérale"
+
+msgid "plugins.themes.encounters.sidebar.description"
+msgstr "Afficher les blocs de la barre latérale configurés pour la revue sur les pages intérieures. Les blocs existants sont conservés lorsqu’ils sont masqués. La page d’accueil utilise toujours la mise en page pleine largeur."
+
+msgid "plugins.themes.encounters.sidebar.hide"
+msgstr "Masquée"
+
+msgid "plugins.themes.encounters.sidebar.show"
+msgstr "Afficher la barre latérale d’OJS"
+
 msgid "plugins.themes.encounters.mastheadTagline"
 msgstr "Sous-titre de la revue dans l’en-tête — Anglais"
 
@@ -23,6 +47,12 @@ msgstr "Sous-titre de la revue dans l’en-tête — Espagnol"
 
 msgid "plugins.themes.encounters.mastheadTaglineFr"
 msgstr "Sous-titre de la revue dans l’en-tête — Français"
+
+msgid "plugins.themes.encounters.primaryMenu"
+msgstr "Navigation principale"
+
+msgid "plugins.themes.encounters.primaryMenu.description"
+msgstr "Utiliser le menu d’Encounters ou celui configuré dans les menus de navigation. Les menus existants et le contenu des pages de la revue sont conservés."
 
 msgid "plugins.themes.encounters.aboutMenu"
 msgstr "Sous-menu À propos"

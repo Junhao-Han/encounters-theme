@@ -15,6 +15,30 @@ msgstr "Un tema independiente para la revista Encounters."
 msgid "plugins.themes.encounters.mastheadTitle"
 msgstr "Nombre corto de la revista en la cabecera"
 
+msgid "plugins.themes.encounters.mastheadLogo"
+msgstr "Logotipo de la cabecera"
+
+msgid "plugins.themes.encounters.mastheadLogo.description"
+msgstr "Elegir el logotipo incluido o el de la revista cargado en Apariencia > Configuración. El título y el subtítulo permanecen visibles. Si no se ha cargado ningún logotipo, se utiliza el de Encounters."
+
+msgid "plugins.themes.encounters.mastheadLogo.default"
+msgstr "Logotipo de Encounters"
+
+msgid "plugins.themes.encounters.mastheadLogo.uploaded"
+msgstr "Logotipo de la revista cargado"
+
+msgid "plugins.themes.encounters.sidebar"
+msgstr "Barra lateral"
+
+msgid "plugins.themes.encounters.sidebar.description"
+msgstr "Mostrar los bloques de la barra lateral configurados para la revista en las páginas interiores. Los bloques existentes se conservan al ocultarlos. La página de inicio siempre utiliza el diseño de ancho completo."
+
+msgid "plugins.themes.encounters.sidebar.hide"
+msgstr "Oculta"
+
+msgid "plugins.themes.encounters.sidebar.show"
+msgstr "Mostrar la barra lateral de OJS"
+
 msgid "plugins.themes.encounters.mastheadTagline"
 msgstr "Subtítulo de la revista en la cabecera — Inglés"
 
@@ -23,6 +47,12 @@ msgstr "Subtítulo de la revista en la cabecera — Español"
 
 msgid "plugins.themes.encounters.mastheadTaglineFr"
 msgstr "Subtítulo de la revista en la cabecera — Francés"
+
+msgid "plugins.themes.encounters.primaryMenu"
+msgstr "Navegación principal"
+
+msgid "plugins.themes.encounters.primaryMenu.description"
+msgstr "Usar el menú de Encounters o el configurado en Menús de navegación. Se conservan los menús existentes y el contenido de las páginas de la revista."
 
 msgid "plugins.themes.encounters.aboutMenu"
 msgstr "Submenú Acerca de"

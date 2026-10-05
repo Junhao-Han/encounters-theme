@@ -5,7 +5,7 @@
  * Distributed under the GNU GPL v3. See LICENSE.
  *}
         </div>{* pkp_structure_main *}
-        {if empty($isFullWidth)}
+        {if empty($isFullWidth) && $activeTheme->getOption('sidebar') == 'show'}
             {capture assign="sidebarCode"}{call_hook name="Templates::Common::Sidebar"}{/capture}
             {if $sidebarCode}<aside class="pkp_structure_sidebar left">{$sidebarCode}</aside>{/if}
         {/if}

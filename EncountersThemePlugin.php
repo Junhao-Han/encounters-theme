@@ -12,6 +12,7 @@ use APP\core\Application;
 use APP\facades\Repo;
 use APP\issue\Collector;
 use APP\journal\Journal;
+use APP\services\NavigationMenuService;
 use APP\submission\Collector as SubmissionCollector;
 use APP\submission\Submission;
 use APP\template\TemplateManager;
@@ -19,7 +20,9 @@ use Carbon\Carbon;
 use PKP\config\Config;
 use PKP\facades\Locale;
 use PKP\i18n\LocaleMetadata;
+use PKP\navigationMenu\NavigationMenu;
 use PKP\navigationMenu\NavigationMenuItem;
+use PKP\navigationMenu\NavigationMenuItemAssignment;
 use PKP\plugins\Hook;
 use PKP\plugins\ThemePlugin;
 
@@ -27,6 +30,16 @@ class EncountersThemePlugin extends ThemePlugin
 {
     public function init()
     {
+        $this->addOption('mastheadLogo', 'FieldOptions', [
+            'type' => 'radio',
+            'label' => __('plugins.themes.encounters.mastheadLogo'),
+            'description' => __('plugins.themes.encounters.mastheadLogo.description'),
+            'options' => [
+                ['value' => 'default', 'label' => __('plugins.themes.encounters.mastheadLogo.default')],
+                ['value' => 'uploaded', 'label' => __('plugins.themes.encounters.mastheadLogo.uploaded')],
+            ],
+            'default' => 'default',
+        ]);
         $this->addOption('mastheadTitle', 'FieldText', [
             'label' => __('plugins.themes.encounters.mastheadTitle'),
             'default' => 'Encounters',
@@ -42,6 +55,16 @@ class EncountersThemePlugin extends ThemePlugin
         $this->addOption('mastheadTaglineFr', 'FieldText', [
             'label' => __('plugins.themes.encounters.mastheadTaglineFr'),
             'default' => 'En éducation, Humanités et technologie',
+        ]);
+        $this->addOption('primaryMenu', 'FieldOptions', [
+            'type' => 'radio',
+            'label' => __('plugins.themes.encounters.primaryMenu'),
+            'description' => __('plugins.themes.encounters.primaryMenu.description'),
+            'options' => [
+                ['value' => 'default', 'label' => __('plugins.themes.encounters.aboutMenu.default')],
+                ['value' => 'custom', 'label' => __('plugins.themes.encounters.aboutMenu.custom')],
+            ],
+            'default' => 'default',
         ]);
         $this->addOption('aboutMenu', 'FieldOptions', [
             'type' => 'radio',
@@ -106,6 +129,17 @@ class EncountersThemePlugin extends ThemePlugin
             'description' => __('plugins.themes.encounters.monographUrl.description'),
             'inputType' => 'url',
             'default' => 'https://queens.scholarsportal.info/omp/index.php/qulp/index',
+        ]);
+
+        $this->addOption('sidebar', 'FieldOptions', [
+            'type' => 'radio',
+            'label' => __('plugins.themes.encounters.sidebar'),
+            'description' => __('plugins.themes.encounters.sidebar.description'),
+            'options' => [
+                ['value' => 'hide', 'label' => __('plugins.themes.encounters.sidebar.hide')],
+                ['value' => 'show', 'label' => __('plugins.themes.encounters.sidebar.show')],
+            ],
+            'default' => 'hide',
         ]);
 
         // The core article template consults this option before rendering statistics.
@@ -173,6 +207,60 @@ class EncountersThemePlugin extends ThemePlugin
     public function formatArticleDate(string $date, string $locale): string
     {
         return Carbon::parse($date)->locale(str_replace('-', '_', $locale))->isoFormat('LL');
+    }
+
+    public function getMonographUrl(): string
+    {
+        $url = trim((string) $this->getOption('monographUrl'));
+        return filter_var($url, FILTER_VALIDATE_URL)
+            && in_array(strtolower((string) parse_url($url, PHP_URL_SCHEME)), ['http', 'https'], true)
+            ? $url : '';
+    }
+
+    public function getPrimaryMenu(?NavigationMenu $configuredMenu, Journal $journal): NavigationMenu
+    {
+        $links = [
+            [NavigationMenuItem::NMI_TYPE_ABOUT, 'navigation.about', 'about', 'index'],
+            [NavigationMenuItem::NMI_TYPE_SUBMISSIONS, 'about.submissions', 'about', 'submissions'],
+        ];
+        if ($journal->getData('publishingMode') != Journal::PUBLISHING_MODE_NONE) {
+            $links[] = [NavigationMenuService::NMI_TYPE_CURRENT, 'navigation.current', 'issue', 'current'];
+            $links[] = [NavigationMenuService::NMI_TYPE_ARCHIVES, 'navigation.archives', 'issue', 'archive'];
+        }
+        if ($journal->getData('enableAnnouncements')) {
+            $links[] = [NavigationMenuItem::NMI_TYPE_ANNOUNCEMENTS, 'announcement.announcements', 'announcement', 'index'];
+        }
+        $monographUrl = $this->getMonographUrl();
+        if ($monographUrl !== '') {
+            $links[] = [NavigationMenuItem::NMI_TYPE_REMOTE_URL, 'plugins.themes.encounters.monographSeries', null, null];
+        }
+
+        // Build the displayed menu without changing saved menus or journal content.
+        $menu = new NavigationMenu();
+        $menu->menuTree = [];
+        foreach ($links as [$type, $titleKey, $page, $op]) {
+            $item = new NavigationMenuItem();
+            $item->setType($type);
+            $item->setTitleLocaleKey($titleKey);
+            $item->setData('encountersPage', $page);
+            $item->setData('encountersOp', $op);
+            if ($type === NavigationMenuItem::NMI_TYPE_REMOTE_URL) {
+                $item->setUrl($monographUrl);
+            }
+            $assignment = new NavigationMenuItemAssignment();
+            $assignment->setMenuItem($item);
+            if ($type === NavigationMenuItem::NMI_TYPE_ABOUT && $this->getOption('aboutMenu') === 'custom') {
+                foreach ($configuredMenu?->menuTree ?? [] as $configured) {
+                    if ($configured->navigationMenuItem->getType() === NavigationMenuItem::NMI_TYPE_ABOUT) {
+                        $assignment->children = $configured->children;
+                        $item->setIsChildVisible($configured->navigationMenuItem->getIsChildVisible());
+                        break;
+                    }
+                }
+            }
+            $menu->menuTree[] = $assignment;
+        }
+        return $menu;
     }
 
     public function getNavigationTitleKey(NavigationMenuItem $item, string $locale): ?string
@@ -373,10 +461,6 @@ class EncountersThemePlugin extends ThemePlugin
             $recentIssues = $this->getRecentIssues($context->getId());
             $recentArticles = $this->getForthcomingArticles($context->getId());
         }
-        $monographUrl = trim((string) $this->getOption('monographUrl'));
-        if (!filter_var($monographUrl, FILTER_VALIDATE_URL) || !in_array(strtolower((string) parse_url($monographUrl, PHP_URL_SCHEME)), ['http', 'https'], true)) {
-            $monographUrl = '';
-        }
         $templateManager->assign([
             'encountersHeroTitles' => $titles,
             'encountersHeroDescription' => $this->getIntroductionDescription(Locale::getLocale()),
@@ -388,7 +472,7 @@ class EncountersThemePlugin extends ThemePlugin
             'encountersShowAnnouncements' => (bool) $context->getData('enableAnnouncements'),
             'encountersAnnouncements' => $templateManager->getTemplateVars('announcements')?->all() ?? [],
             'encountersMonographDescription' => $this->getMonographDescription(Locale::getLocale()),
-            'encountersMonographUrl' => $monographUrl,
+            'encountersMonographUrl' => $this->getMonographUrl(),
         ]);
 
         return Hook::CONTINUE;

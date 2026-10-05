@@ -4,17 +4,28 @@
  * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. See LICENSE.
  *}
+{if $id == 'navigationPrimary' && $currentJournal && $activeTheme->getOption('primaryMenu') == 'default'}
+    {assign var=navigationMenu value=$activeTheme->getPrimaryMenu($navigationMenu, $currentJournal)}
+{/if}
 {if $navigationMenu}
     {assign var=useDefaultAboutMenu value=($id == 'navigationPrimary' && $currentJournal && $activeTheme->getOption('aboutMenu') == 'default')}
     <ul id="{$id|escape}" class="{$ulClass|escape} pkp_nav_list">
         {foreach item=assignment from=$navigationMenu->menuTree name=encountersMenu}
             {if !$assignment->navigationMenuItem->getIsDisplayed()}{continue}{/if}
             {assign var=useDefaultAbout value=($useDefaultAboutMenu && $assignment->navigationMenuItem->getType() == 'NMI_TYPE_ABOUT')}
-            {assign var=itemTitle value=$assignment->navigationMenuItem->getLocalizedTitle()}
             {assign var=itemTitleKey value=$activeTheme->getNavigationTitleKey($assignment->navigationMenuItem, $currentLocale)}
-            {if $itemTitleKey}{capture assign=itemTitle}{translate key=$itemTitleKey}{/capture}{/if}
+            {if $itemTitleKey}
+                {capture assign=itemTitle}{translate key=$itemTitleKey}{/capture}
+            {else}
+                {assign var=itemTitle value=$assignment->navigationMenuItem->getLocalizedTitle()}
+            {/if}
+            {if $assignment->navigationMenuItem->getData('encountersPage')}
+                {capture assign=itemUrl}{url page=$assignment->navigationMenuItem->getData('encountersPage') op=$assignment->navigationMenuItem->getData('encountersOp')}{/capture}
+            {else}
+                {assign var=itemUrl value=$assignment->navigationMenuItem->getUrl()|escape}
+            {/if}
             <li class="{$liClass|escape}">
-                <a href="{$assignment->navigationMenuItem->getUrl()|escape}">
+                <a href="{$itemUrl}">
                     {$itemTitle|escape}
                     {if $assignment->navigationMenuItem->getData('encountersTaskCount') !== null}
                         <span class="task_count">{$assignment->navigationMenuItem->getData('encountersTaskCount')|intval}</span>

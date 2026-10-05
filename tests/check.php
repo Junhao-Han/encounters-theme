@@ -91,9 +91,9 @@ mkdir($temporary . '/fixtures/frontend/components', 0700, true);
 mkdir($temporary . '/compile', 0700, true);
 file_put_contents($temporary . '/fixtures/frontend/components/headerHead.tpl', '<head><title>{$pageTitleTranslated|escape}</title></head>');
 
-class FixtureJournal
+class FixtureJournal extends \APP\journal\Journal
 {
-    public function getLocalizedName(): string
+    public function getLocalizedName($preferredLocale = null): string
     {
         return 'Encounters & Education';
     }
@@ -180,16 +180,23 @@ try {
         }
         return $message;
     });
-    $smarty->registerPlugin('function', 'url', static function (array $params): string {
+    $smarty->registerPlugin('function', 'url', static function (array $params) use ($smarty): string {
         $parts = [$params['page'] ?? 'index', $params['op'] ?? 'index'];
         if (isset($params['path'])) {
             array_push($parts, ...(array) $params['path']);
         }
-        return '/index.php/encounters/en/' . implode('/', array_map('rawurlencode', $parts));
+        $locale = $smarty->getTemplateVars('currentLocale') ?? 'en';
+        return '/index.php/encounters/' . rawurlencode($locale) . '/' . implode('/', array_map('rawurlencode', $parts));
     });
     $smarty->registerPlugin('function', 'load_menu', static fn (array $params): string => '<ul id="' . htmlspecialchars($params['id']) . '"><li><a href="/about">About</a></li></ul>');
     $smarty->registerPlugin('function', 'load_script', static fn (): string => '');
-    $smarty->registerPlugin('function', 'call_hook', static fn (): string => '');
+    $sidebarCalls = 0;
+    $sidebarBlocks = '<div class="pkp_block">Existing journal links</div>';
+    $smarty->registerPlugin('function', 'call_hook', static function (array $params) use (&$sidebarCalls, &$sidebarBlocks): string {
+        if ($params['name'] !== 'Templates::Common::Sidebar') return '';
+        $sidebarCalls++;
+        return $sidebarBlocks;
+    });
     $smarty->registerPlugin('modifier', 'intval', intval(...));
     $smarty->registerPlugin('modifier', 'date_format', static fn ($date, $format): string => (new \Carbon\Carbon($date))->locale('en')->translatedFormat($format));
     // OJS's sanitization is outside this fixture test; use trusted sample HTML.
@@ -317,7 +324,14 @@ try {
     $logo = ['uploadName' => 'logo.png', 'width' => 200, 'height' => 100, 'altText' => 'Journal "logo" & <identity>'];
     $smarty->assign('displayPageHeaderLogo', $logo);
     $header = $smarty->fetch('frontend/components/header.tpl');
+    check(str_contains($header, '/images/encounters-logo.png') && !str_contains($header, '/public/journals/1/logo.png'), 'An existing journal logo overrides the default branding');
+    check(str_contains($header, 'class="encounters-brand-title">Encounters</span>') && str_contains($header, 'class="encounters-tagline"'), 'Default header title or subtitle is missing');
+    check($smarty->getTemplateVars('displayPageHeaderLogo') === $logo, 'The saved journal logo was changed');
+    $smarty->assign('activeTheme', new FixtureTheme(overrides: ['mastheadLogo' => 'uploaded']));
+    $header = $smarty->fetch('frontend/components/header.tpl');
     check(str_contains($header, 'alt="Journal &quot;logo&quot; &amp; &lt;identity&gt;"'), 'Configured logo alternative text is missing or unsafe');
+    check(str_contains($header, 'class="encounters-brand-mark encounters-uploaded-logo"') && str_contains($header, '/public/journals/1/logo.png'), 'Opting into the uploaded logo does not display it');
+    check(str_contains($header, 'class="encounters-brand-title">Encounters</span>') && str_contains($header, 'class="encounters-tagline"'), 'Uploaded logo replaces the title or subtitle');
     foreach (['', null] as $altText) {
         $logo['altText'] = $altText;
         $smarty->assign('displayPageHeaderLogo', $logo);
@@ -328,6 +342,16 @@ try {
     $header = $smarty->fetch('frontend/components/header.tpl');
     check(str_contains($header, 'alt="Test site"'), 'Logo alternative text does not fall back to the site title');
     $smarty->assign(['displayPageHeaderLogo' => null, 'displayPageHeaderTitle' => $journal->getLocalizedName()]);
+    $header = $smarty->fetch('frontend/components/header.tpl');
+    check(str_contains($header, '/images/encounters-logo.png') && !str_contains($header, 'encounters-uploaded-logo'), 'Missing uploaded logo does not fall back to Encounters');
+
+    $smarty->assign(['displayPageHeaderLogo' => $logo, 'activeTheme' => new FixtureTheme(overrides: ['mastheadLogo' => 'uploaded'])]);
+    foreach (['en' => 'Education &amp; Humanities', 'es' => 'Educación &lt;Humanidades&gt;', 'fr' => 'Éducation &amp; Humanités'] as $locale => $tagline) {
+        $smarty->assign('currentLocale', $locale);
+        $header = $smarty->fetch('frontend/components/header.tpl');
+        check(str_contains($header, 'class="encounters-tagline">' . $tagline . '</span>'), 'Uploaded logo hides the translated subtitle: ' . $locale);
+    }
+    $smarty->assign(['displayPageHeaderLogo' => null, 'activeTheme' => new FixtureTheme()]);
 
     foreach (['en' => 'Education &amp; Humanities', 'es' => 'Educación &lt;Humanidades&gt;', 'fr' => 'Éducation &amp; Humanités', 'es_MX' => 'Educación &lt;Humanidades&gt;', 'fr-CA' => 'Éducation &amp; Humanités', 'de' => 'Education &amp; Humanities'] as $locale => $tagline) {
         $smarty->assign(['currentLocale' => $locale, 'requestedPage' => 'about']);
@@ -337,6 +361,27 @@ try {
     $smarty->assign(['activeTheme' => new FixtureTheme(overrides: ['mastheadTaglineFr' => '']), 'currentLocale' => 'fr']);
     check(!str_contains($smarty->fetch('frontend/components/header.tpl'), 'class="encounters-tagline"'), 'Empty subtitle falls back to another language');
     $smarty->assign(['activeTheme' => new FixtureTheme(), 'currentLocale' => 'en', 'requestedPage' => 'index']);
+
+    foreach (['hide', 'show'] as $sidebarMode) {
+        $smarty->assign(['activeTheme' => new FixtureTheme(overrides: ['sidebar' => $sidebarMode]), 'hasSidebar' => true, 'isFullWidth' => false]);
+        $callsBefore = $sidebarCalls;
+        $header = $smarty->fetch('frontend/components/header.tpl');
+        $footer = $smarty->fetch('frontend/components/footer.tpl');
+        check(str_contains($header, 'has_sidebar') === ($sidebarMode === 'show'), 'Sidebar layout does not follow the theme option');
+        check(str_contains($footer, $sidebarBlocks) === ($sidebarMode === 'show'), 'Configured sidebar blocks do not follow the theme option');
+        check($sidebarCalls - $callsBefore === ($sidebarMode === 'show' ? 1 : 0), 'Hidden sidebar still runs the sidebar hook');
+    }
+    $smarty->assign(['hasSidebar' => true, 'isFullWidth' => true]);
+    $callsBefore = $sidebarCalls;
+    $header = $smarty->fetch('frontend/components/header.tpl');
+    $footer = $smarty->fetch('frontend/components/footer.tpl');
+    check(!str_contains($header, 'has_sidebar') && !str_contains($footer, 'pkp_structure_sidebar'), 'Full-width page displays an enabled sidebar');
+    check($sidebarCalls === $callsBefore, 'Full-width page runs the sidebar hook');
+    $sidebarBlocks = '';
+    $smarty->assign(['hasSidebar' => false, 'isFullWidth' => false]);
+    $footer = $smarty->fetch('frontend/components/footer.tpl');
+    check(!str_contains($footer, 'pkp_structure_sidebar'), 'Empty sidebar leaves an empty container');
+    $smarty->assign('activeTheme', new FixtureTheme());
 
     $smarty->assign([
         'navigationMenu' => (object) ['menuTree' => [
@@ -427,6 +472,60 @@ try {
     $emptyAbout = $smarty->fetch('frontend/components/navigationMenu.tpl');
     check(str_contains($emptyAbout, 'Editorial Team') && str_contains($emptyAbout, 'data-encounters-submenu'), 'Default About menu needs database children to work');
 
+    $journal->setData('publishingMode', \APP\journal\Journal::PUBLISHING_MODE_OPEN);
+    $journal->setData('enableAnnouncements', true);
+    $journal->setData('about', '<p>Existing journal introduction.</p>', 'en');
+    $journal->setData('authorGuidelines', '<p>Existing submission guidelines.</p>', 'en');
+    $journalBefore = serialize($journal);
+    $defaultTheme = new FixtureTheme(overrides: ['primaryMenu' => 'default', 'monographUrl' => 'https://example.org/series?a=1&b=2']);
+    $primaryKeys = ['navigation.about', 'about.submissions', 'navigation.current', 'navigation.archives', 'announcement.announcements', 'plugins.themes.encounters.monographSeries'];
+    foreach (['en', 'es', 'fr'] as $locale) {
+        $smarty->assign(['activeTheme' => $defaultTheme, 'navigationMenu' => null, 'currentLocale' => $locale]);
+        $defaultNavigation = $smarty->fetch('frontend/components/navigationMenu.tpl');
+        $menuDom->loadHTML('<?xml encoding="UTF-8">' . $defaultNavigation);
+        $menuXPath = new DOMXPath($menuDom);
+        $links = $menuXPath->query('//ul[@id="navigationPrimary"]/li/a');
+        check(array_map(fn ($link) => trim($link->textContent), iterator_to_array($links)) === array_map(fn ($key) => $catalogs[$locale][$key], $primaryKeys), 'Default navigation order or translation is incorrect: ' . $locale);
+        $expectedPaths = array_map(fn ($route) => '/index.php/encounters/' . $locale . '/' . $route, ['about/index', 'about/submissions', 'issue/current', 'issue/archive', 'announcement/index']);
+        $expectedPaths[] = 'https://example.org/series?a=1&b=2';
+        check(array_map(fn ($link) => $link->getAttribute('href'), iterator_to_array($links)) === $expectedPaths, 'Default navigation does not link to existing journal routes: ' . $locale);
+        check($menuXPath->query('//ul[@id="navigationPrimary-submenu-1"]/li/a')->length === 4, 'Default About submenu needs a configured menu');
+        check(str_contains($defaultNavigation, 'https://example.org/series?a=1&amp;b=2'), 'Default external URL is not escaped');
+    }
+    check(serialize($journal) === $journalBefore, 'Default navigation changes journal content or settings');
+
+    $savedMenu = new \PKP\navigationMenu\NavigationMenu();
+    $savedAbout = new FixtureMenuItem('Our journal', true, true);
+    $savedAbout->setType(\PKP\navigationMenu\NavigationMenuItem::NMI_TYPE_ABOUT);
+    $savedMenu->menuTree = [(object) [
+        'navigationMenuItem' => $savedAbout,
+        'children' => [
+            (object) ['navigationMenuItem' => new FixtureMenuItem('Existing page', url: '/existing-page')],
+            (object) ['navigationMenuItem' => new FixtureMenuItem('Hidden page', false)],
+        ],
+    ]];
+    $menuBefore = serialize($savedMenu);
+    $smarty->assign(['activeTheme' => new FixtureTheme('custom', ['primaryMenu' => 'default']), 'navigationMenu' => $savedMenu, 'currentLocale' => 'en']);
+    $customSubmenu = $smarty->fetch('frontend/components/navigationMenu.tpl');
+    check(str_contains($customSubmenu, 'Existing page') && str_contains($customSubmenu, 'href="/existing-page"') && !str_contains($customSubmenu, 'Hidden page'), 'Default navigation loses the custom About submenu');
+    check(serialize($savedMenu) === $menuBefore, 'Default navigation modifies the saved menu');
+    $smarty->assign('activeTheme', new FixtureTheme('custom', ['primaryMenu' => 'custom']));
+    $savedNavigation = $smarty->fetch('frontend/components/navigationMenu.tpl');
+    check(str_contains($savedNavigation, 'Our journal') && str_contains($savedNavigation, 'Existing page') && !str_contains($savedNavigation, '/issue/current'), 'Custom primary menu is overridden');
+    $smarty->assign(['activeTheme' => new FixtureTheme('custom', ['primaryMenu' => 'default']), 'id' => 'navigationUser']);
+    check(str_contains($smarty->fetch('frontend/components/navigationMenu.tpl'), 'Our journal'), 'Default primary menu overrides the user menu');
+    $smarty->assign(['id' => 'navigationPrimary', 'currentJournal' => null]);
+    check(str_contains($smarty->fetch('frontend/components/navigationMenu.tpl'), 'Our journal'), 'Default primary menu overrides the site menu');
+
+    $journal->setData('publishingMode', \APP\journal\Journal::PUBLISHING_MODE_NONE);
+    $journal->setData('enableAnnouncements', false);
+    foreach (['', 'javascript:alert(1)', 'https://example.org/" onmouseover="bad'] as $seriesUrl) {
+        $smarty->assign(['activeTheme' => new FixtureTheme(overrides: ['primaryMenu' => 'default', 'monographUrl' => $seriesUrl]), 'currentJournal' => $journal, 'navigationMenu' => null]);
+        $limitedMenu = $smarty->fetch('frontend/components/navigationMenu.tpl');
+        check(!str_contains($limitedMenu, '/issue/') && !str_contains($limitedMenu, '/announcement/') && !str_contains($limitedMenu, 'Monograph Series'), 'Default navigation shows disabled sections or an invalid URL');
+    }
+    $smarty->assign(['activeTheme' => new FixtureTheme(), 'navigationMenu' => $aboutMenu]);
+
     // Exercise the fetch hook at the same point where OJS decorates a dashboard title.
     \PKP\plugins\Hook::add('TemplateManager::fetch', $plugin->prepareDashboardMenuItem(...));
     foreach (['es', 'fr'] as $locale) {
@@ -490,7 +589,9 @@ try {
     echo "PASS: issue routes, escaping, cover fallback, language routes and empty states.\n";
     echo "PASS: no parent-theme LESS imports; disclosure markup and static highlights.\n";
     echo "PASS: dashboard notification badges, menu title escaping and logo alternative text.\n";
+    echo "PASS: default branding, optional uploaded logo and sidebar visibility.\n";
     echo "PASS: default About menu, custom menu option and menu isolation.\n";
+    echo "PASS: default primary navigation, existing page links and saved content preservation.\n";
     echo "PASS: three-language navigation, homepage content and shared frontend translation keys.\n";
     echo "Installation, database filtering and browser appearance still require live testing.\n";
 } finally {

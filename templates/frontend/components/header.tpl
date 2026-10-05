@@ -9,7 +9,7 @@
 <html lang="{$currentLocale|replace:"_":"-"|escape}" dir="{$currentLocaleLangDir|default:"ltr"|escape}">
 {if !$pageTitleTranslated}{capture assign="pageTitleTranslated"}{translate key=$pageTitle}{/capture}{/if}
 {include file="frontend/components/headerHead.tpl"}
-<body class="encounters_theme pkp_page_{$requestedPage|default:"index"|escape} pkp_op_{$requestedOp|default:"index"|escape}{if $displayPageHeaderLogo} has_site_logo{/if}" dir="{$currentLocaleLangDir|default:"ltr"|escape}">
+<body class="encounters_theme pkp_page_{$requestedPage|default:"index"|escape} pkp_op_{$requestedOp|default:"index"|escape}" dir="{$currentLocaleLangDir|default:"ltr"|escape}">
 <div class="pkp_structure_page">
     <header class="pkp_structure_head encounters-header" id="headerNavigationContainer" role="banner">
         {include file="frontend/components/skipLinks.tpl" issue=$encountersCurrentIssue|default:null announcements=$encountersAnnouncements|default:[]}
@@ -35,19 +35,19 @@
                         <h1 class="pkp_screen_reader">{$displayPageHeaderTitle|default:$siteTitle|escape}</h1>
                     {/if}
                     <div class="pkp_site_name">
-                        <a class="{if $displayPageHeaderLogo}is_img{else}is_text{/if}" href="{url page="index"}">
-                            {if $displayPageHeaderLogo}
-                                <img src="{$publicFilesDir}/{$displayPageHeaderLogo.uploadName|escape:"url"}" alt="{$displayPageHeaderLogo.altText|default:$displayPageHeaderTitle|default:$siteTitle|escape}" width="{$displayPageHeaderLogo.width|escape}" height="{$displayPageHeaderLogo.height|escape}">
+                        <a class="is_text" href="{url page="index"}">
+                            {if $activeTheme->getOption('mastheadLogo') == 'uploaded' && !empty($displayPageHeaderLogo.uploadName)}
+                                <img class="encounters-brand-mark encounters-uploaded-logo" src="{$publicFilesDir|escape}/{$displayPageHeaderLogo.uploadName|escape:"url"}" alt="{$displayPageHeaderLogo.altText|default:$displayPageHeaderTitle|default:$siteTitle|escape}"{if !empty($displayPageHeaderLogo.width) && !empty($displayPageHeaderLogo.height)} width="{$displayPageHeaderLogo.width|intval}" height="{$displayPageHeaderLogo.height|intval}"{/if}>
                             {else}
                                 <img class="encounters-brand-mark" src="{$encountersThemeUrl|escape}/images/encounters-logo.png?v=2" width="496" height="353" alt="">
-                                <span class="encounters-brand-copy">
-                                    <span class="encounters-brand-title">{$activeTheme->getOption('mastheadTitle')|default:$displayPageHeaderTitle|escape}</span>
-                                    {assign var=mastheadTagline value=$activeTheme->getMastheadTagline($currentLocale)}
-                                    {if $mastheadTagline}
-                                        <span class="encounters-tagline">{$mastheadTagline|escape}</span>
-                                    {/if}
-                                </span>
                             {/if}
+                            <span class="encounters-brand-copy">
+                                <span class="encounters-brand-title">{$activeTheme->getOption('mastheadTitle')|default:$displayPageHeaderTitle|escape}</span>
+                                {assign var=mastheadTagline value=$activeTheme->getMastheadTagline($currentLocale)}
+                                {if $mastheadTagline}
+                                    <span class="encounters-tagline">{$mastheadTagline|escape}</span>
+                                {/if}
+                            </span>
                         </a>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
             </div>
         </div>
     </header>
-    {if $isFullWidth}{assign var=hasSidebar value=0}{/if}
+    {if $isFullWidth || $activeTheme->getOption('sidebar') != 'show'}{assign var=hasSidebar value=0}{/if}
     <div class="pkp_structure_content{if $hasSidebar} has_sidebar{/if}">
         <div class="pkp_structure_main" role="main">
             <a id="pkp_content_main"></a>

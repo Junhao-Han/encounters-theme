@@ -15,6 +15,30 @@ msgstr "A standalone theme for the Encounters journal."
 msgid "plugins.themes.encounters.mastheadTitle"
 msgstr "Short journal name in the header"
 
+msgid "plugins.themes.encounters.mastheadLogo"
+msgstr "Header logo"
+
+msgid "plugins.themes.encounters.mastheadLogo.description"
+msgstr "Choose the bundled logo or the journal logo uploaded under Appearance > Setup. The title and subtitle remain visible. If no logo is uploaded, the Encounters logo is used."
+
+msgid "plugins.themes.encounters.mastheadLogo.default"
+msgstr "Encounters logo"
+
+msgid "plugins.themes.encounters.mastheadLogo.uploaded"
+msgstr "Uploaded journal logo"
+
+msgid "plugins.themes.encounters.sidebar"
+msgstr "Sidebar"
+
+msgid "plugins.themes.encounters.sidebar.description"
+msgstr "Show the journal's configured sidebar blocks on inner pages. Existing blocks are preserved when hidden. The homepage always uses the full-width layout."
+
+msgid "plugins.themes.encounters.sidebar.hide"
+msgstr "Hidden"
+
+msgid "plugins.themes.encounters.sidebar.show"
+msgstr "Show OJS sidebar"
+
 msgid "plugins.themes.encounters.mastheadTagline"
 msgstr "Journal subtitle in the header — English"
 
@@ -26,6 +50,12 @@ msgstr "Journal subtitle in the header — French"
 
 msgid "plugins.themes.encounters.aboutMenu"
 msgstr "About submenu"
+
+msgid "plugins.themes.encounters.primaryMenu"
+msgstr "Main navigation"
+
+msgid "plugins.themes.encounters.primaryMenu.description"
+msgstr "Use the Encounters menu or the menu configured in Navigation Menus. Existing menus and journal page content are preserved."
 
 msgid "plugins.themes.encounters.aboutMenu.description"
 msgstr "Use the Encounters links or the links configured in Navigation Menus."
