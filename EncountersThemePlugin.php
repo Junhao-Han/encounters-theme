@@ -78,27 +78,27 @@ class EncountersThemePlugin extends ThemePlugin
         ]);
         $this->addOption('introductionTitleEn', 'FieldText', [
             'label' => __('plugins.themes.encounters.introductionTitleEn'),
-            'default' => 'Encounters in Education, Humanities, and Technology.',
+            'default' => 'Encounters in Theory and History of Education',
         ]);
         $this->addOption('introductionTitleEs', 'FieldText', [
             'label' => __('plugins.themes.encounters.introductionTitleEs'),
-            'default' => 'Encuentros en Educación, Humanidades y Tecnología',
+            'default' => 'Encuentros en Teoría e Historia de la Educación',
         ]);
         $this->addOption('introductionTitleFr', 'FieldText', [
             'label' => __('plugins.themes.encounters.introductionTitleFr'),
-            'default' => 'Rencontres en éducation, Humanités et technologie',
+            'default' => 'Rencontres en Théorie et Histoire de l’Éducation',
         ]);
         $this->addOption('introductionDescription', 'FieldTextarea', [
             'label' => __('plugins.themes.encounters.introductionDescription'),
-            'default' => 'An international, interdisciplinary journal exploring the intersections of Education, Humanities, and Technology',
+            'default' => 'An international interdisciplinary journal exploring the intersections of Education, Humanities, and Technology.',
         ]);
         $this->addOption('introductionDescriptionEs', 'FieldTextarea', [
             'label' => __('plugins.themes.encounters.introductionDescriptionEs'),
-            'default' => 'Una revista internacional e interdisciplinaria que explora las intersecciones entre la Educación, las Humanidades y la Tecnología',
+            'default' => 'Una revista internacional e interdisciplinaria que explora las intersecciones entre la Educación, las Humanidades y la Tecnología.',
         ]);
         $this->addOption('introductionDescriptionFr', 'FieldTextarea', [
             'label' => __('plugins.themes.encounters.introductionDescriptionFr'),
-            'default' => 'Une revue internationale et interdisciplinaire explorant les intersections entre l’Éducation, les Humanités et la Technologie',
+            'default' => 'Une revue internationale et interdisciplinaire explorant les intersections entre l’Éducation, les Humanités et la Technologie.',
         ]);
         $this->addOption('heroIssueId', 'FieldSelect', [
             'label' => __('plugins.themes.encounters.heroIssue'),
