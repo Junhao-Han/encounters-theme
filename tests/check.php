@@ -307,7 +307,7 @@ try {
     check(str_contains($empty, 'id="encounters-introduction-heading">Encounters &amp; Education'), 'Introduction title does not fall back to the journal name');
     check(!str_contains($empty, 'class="encounters-description"'), 'Empty journal description leaves an empty block');
     check(str_contains($empty, 'Published issues will appear here.'), 'Empty recent issues message is missing');
-    check(str_contains($empty, 'Published articles will appear here.'), 'Empty recent articles message is missing');
+    check(str_contains($empty, 'There are currently no forthcoming articles.'), 'Empty forthcoming articles message is missing');
     check(!str_contains($empty, 'class="encounters-news"'), 'Disabled announcements and series leave an empty news section');
     $smarty->assign(['encountersShowIssues' => false, 'encountersShowAnnouncements' => true]);
     $noIssues = $smarty->fetch('frontend/pages/indexJournal.tpl');

@@ -94,7 +94,16 @@ msgid "plugins.themes.encounters.recentArticles"
 msgstr "Forthcoming Articles"
 
 msgid "plugins.themes.encounters.noArticles"
-msgstr "Published articles will appear here."
+msgstr "There are currently no forthcoming articles."
+
+msgid "plugins.themes.encounters.forthcomingIssue"
+msgstr "Forthcoming Articles source issue"
+
+msgid "plugins.themes.encounters.forthcomingIssue.description"
+msgstr "Choose a published issue used for Online First articles. Its three latest published articles appear automatically in Forthcoming Articles. This issue is excluded from Recent Issues."
+
+msgid "plugins.themes.encounters.forthcomingIssue.none"
+msgstr "No issue selected"
 
 msgid "plugins.themes.encounters.announcementsIntro"
 msgstr "News and updates from the journal."

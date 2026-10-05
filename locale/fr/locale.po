@@ -94,7 +94,16 @@ msgid "plugins.themes.encounters.recentArticles"
 msgstr "Articles à paraître"
 
 msgid "plugins.themes.encounters.noArticles"
-msgstr "Les articles publiés apparaîtront ici."
+msgstr "Il n’y a actuellement aucun article à paraître."
+
+msgid "plugins.themes.encounters.forthcomingIssue"
+msgstr "Numéro source des articles à paraître"
+
+msgid "plugins.themes.encounters.forthcomingIssue.description"
+msgstr "Choisissez un numéro publié destiné aux articles en publication anticipée. Ses trois articles publiés les plus récents apparaîtront automatiquement dans Articles à paraître. Ce numéro est exclu des Numéros récents."
+
+msgid "plugins.themes.encounters.forthcomingIssue.none"
+msgstr "Aucun numéro sélectionné"
 
 msgid "plugins.themes.encounters.announcementsIntro"
 msgstr "Actualités et informations de la revue."

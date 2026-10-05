@@ -83,6 +83,12 @@ class EncountersThemePlugin extends ThemePlugin
             'options' => [['value' => 0, 'label' => __('plugins.themes.encounters.heroIssue.none')]],
             'default' => 0,
         ]);
+        $this->addOption('forthcomingIssueId', 'FieldSelect', [
+            'label' => __('plugins.themes.encounters.forthcomingIssue'),
+            'description' => __('plugins.themes.encounters.forthcomingIssue.description'),
+            'options' => [['value' => 0, 'label' => __('plugins.themes.encounters.forthcomingIssue.none')]],
+            'default' => 0,
+        ]);
         $this->addOption('monographDescription', 'FieldTextarea', [
             'label' => __('plugins.themes.encounters.monographDescription'),
             'default' => "Supported by Queen's University Library, THE is an open access series exploring the history, philosophy, and sociology of education.",
@@ -196,7 +202,7 @@ class EncountersThemePlugin extends ThemePlugin
             return $options;
         }
 
-        $choices = [['value' => 0, 'label' => __('plugins.themes.encounters.heroIssue.none')]];
+        $choices = [];
         $context = Application::get()->getRequest()->getContext();
         if ($context && $context->getData('publishingMode') != Journal::PUBLISHING_MODE_NONE) {
             $issues = Repo::issue()->getCollector()
@@ -208,8 +214,67 @@ class EncountersThemePlugin extends ThemePlugin
                 $choices[] = ['value' => $issue->getId(), 'label' => $issue->getIssueIdentification()];
             }
         }
-        $options['heroIssueId']->options = $choices;
+        $options['heroIssueId']->options = array_merge([
+            ['value' => 0, 'label' => __('plugins.themes.encounters.heroIssue.none')],
+        ], $choices);
+        $options['forthcomingIssueId']->options = array_merge([
+            ['value' => 0, 'label' => __('plugins.themes.encounters.forthcomingIssue.none')],
+        ], $choices);
         return $options;
+    }
+
+    public function getRecentIssues(int $contextId): array
+    {
+        $forthcomingIssueId = (int) $this->getOption('forthcomingIssueId');
+        return Repo::issue()->getCollector()
+            ->filterByContextIds([$contextId])
+            ->filterByPublished(true)
+            ->orderBy(Collector::ORDERBY_SEQUENCE)
+            ->limit($forthcomingIssueId > 0 ? 4 : 3)
+            ->getMany()
+            ->reject(fn ($issue) => $issue->getId() === $forthcomingIssueId)
+            ->take(3)
+            ->all();
+    }
+
+    public function getForthcomingArticles(int $contextId): array
+    {
+        $issueId = (int) $this->getOption('forthcomingIssueId');
+        if ($issueId <= 0) {
+            return [];
+        }
+        $issue = Repo::issue()->get($issueId, $contextId);
+        if (!$issue || !$issue->getPublished()) {
+            return [];
+        }
+
+        $articleIds = Repo::submission()->getCollector()
+            ->filterByContextIds([$contextId])
+            ->filterByStatus([Submission::STATUS_PUBLISHED])
+            ->orderBy(SubmissionCollector::ORDERBY_DATE_PUBLISHED, SubmissionCollector::ORDER_DIR_DESC)
+            ->limit(3)
+            ->getQueryBuilder()
+            // Match the current version, so articles moved to a regular issue disappear.
+            ->where('po.issue_id', $issueId)
+            ->where('po.status', Submission::STATUS_PUBLISHED)
+            ->orderBy('s.submission_id', 'desc')
+            ->pluck('s.submission_id');
+        $articles = [];
+        foreach ($articleIds as $articleId) {
+            $article = Repo::submission()->get((int) $articleId, $contextId);
+            $publication = $article?->getCurrentPublication();
+            if (!$publication || $article->getData('status') !== Submission::STATUS_PUBLISHED
+                || $publication->getData('status') !== Submission::STATUS_PUBLISHED
+                || (int) $publication->getData('issueId') !== $issueId) {
+                continue;
+            }
+            $articles[] = [
+                'title' => $publication->getLocalizedFullTitle(),
+                'path' => $article->getBestId(),
+                'date' => $publication->getData('datePublished'),
+            ];
+        }
+        return $articles;
     }
 
     public function translateSearchResults(string $hookName, array $args): bool
@@ -291,6 +356,7 @@ class EncountersThemePlugin extends ThemePlugin
         $currentIssue = null;
         $heroIssue = null;
         $recentIssues = [];
+        $recentArticles = [];
         $showIssues = $context->getData('publishingMode') != Journal::PUBLISHING_MODE_NONE;
         if ($showIssues) {
             $currentIssue = Repo::issue()->getCurrent($context->getId());
@@ -304,35 +370,8 @@ class EncountersThemePlugin extends ThemePlugin
                     $heroIssue = null;
                 }
             }
-            $recentIssues = Repo::issue()->getCollector()
-                ->filterByContextIds([$context->getId()])
-                ->filterByPublished(true)
-                ->orderBy(Collector::ORDERBY_SEQUENCE)
-                ->limit(3)
-                ->getMany()
-                ->all();
-        }
-        $articleIds = Repo::submission()->getCollector()
-            ->filterByContextIds([$context->getId()])
-            ->filterByStatus([Submission::STATUS_PUBLISHED])
-            ->orderBy(SubmissionCollector::ORDERBY_DATE_PUBLISHED, SubmissionCollector::ORDER_DIR_DESC)
-            ->limit(3)
-            ->getQueryBuilder()
-            ->where('po.status', Submission::STATUS_PUBLISHED)
-            ->orderBy('s.submission_id', 'desc')
-            ->pluck('s.submission_id');
-        $recentArticles = [];
-        foreach ($articleIds as $articleId) {
-            $article = Repo::submission()->get((int) $articleId, $context->getId());
-            $publication = $article?->getCurrentPublication();
-            if (!$publication || $article->getData('status') !== Submission::STATUS_PUBLISHED || $publication->getData('status') !== Submission::STATUS_PUBLISHED) {
-                continue;
-            }
-            $recentArticles[] = [
-                'title' => $publication->getLocalizedFullTitle(),
-                'path' => $article->getBestId(),
-                'date' => $publication->getData('datePublished'),
-            ];
+            $recentIssues = $this->getRecentIssues($context->getId());
+            $recentArticles = $this->getForthcomingArticles($context->getId());
         }
         $monographUrl = trim((string) $this->getOption('monographUrl'));
         if (!filter_var($monographUrl, FILTER_VALIDATE_URL) || !in_array(strtolower((string) parse_url($monographUrl, PHP_URL_SCHEME)), ['http', 'https'], true)) {
