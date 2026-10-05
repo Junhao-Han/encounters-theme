@@ -49,6 +49,51 @@
 
         .articles { margin-top: 0; }
     }
+
+    .page_submissions .submission_checklist > ul {
+        padding: 0;
+        border: 1px solid @rule;
+        border-radius: 4px;
+        background: #fff;
+        list-style: none;
+
+        > li {
+            position: relative;
+            margin: 0;
+            padding: 1em 1.25em 1em 3em;
+            overflow-wrap: anywhere;
+
+            + li { border-top: 1px solid @rule; }
+            > p:first-child { margin-top: 0; }
+            > p:last-child { margin-bottom: 0; }
+
+            &::before, &::after {
+                content: "";
+                position: absolute;
+                box-sizing: border-box;
+                pointer-events: none;
+            }
+
+            &::before {
+                top: 1.5em;
+                inset-inline-start: 1em;
+                width: 1em;
+                height: 1em;
+                border: 2px solid @accent;
+                border-radius: 3px;
+            }
+
+            &::after {
+                top: 1.65em;
+                inset-inline-start: 1.2em;
+                width: 0.75em;
+                height: 0.45em;
+                border-bottom: 2px solid @accent;
+                border-left: 2px solid @accent;
+                transform: rotate(-45deg);
+            }
+        }
+    }
 }
 
 // Full-width journal homepage.

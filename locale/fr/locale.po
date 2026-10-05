@@ -9,6 +9,9 @@ msgstr ""
 msgid "plugins.themes.encounters.name"
 msgstr "Encounters"
 
+msgid "plugins.themes.encounters.submissionRequirement"
+msgstr "Exigence {$number}"
+
 msgid "plugins.themes.encounters.description"
 msgstr "Un thème autonome pour la revue Encounters."
 

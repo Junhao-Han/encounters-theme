@@ -34,6 +34,47 @@ check(str_contains($css, '.obj_article_details'), 'Core article baseline styles 
 check(str_contains($css, '.page_login'), 'Core login baseline styles missing');
 check(!str_contains($css, '/plugins/themes/default/'), 'Compiled CSS references parent-theme assets');
 
+$submissionLess = new Less_Parser();
+$submissionLess->parse('@baseUrl: "";');
+$submissionLess->parseFile($pluginRoot . '/styles/submission.less');
+check(str_contains($submissionLess->getCss(), '.encounters-submission-brand'), 'Submission branding CSS does not compile');
+
+$checklistForm = [
+    'id' => 'startSubmission',
+    'fields' => [
+        ['name' => 'title', 'value' => 'Unchanged title'],
+        ['name' => 'submissionRequirements', 'label' => 'Checklist', 'groupId' => 'default',
+            'description' => '<p>Read first.</p><div><ul><li>Français &amp; Español<ul><li>Nested detail</li></ul></li><li><a href="/form.docx">AI Disclosure Form</a></li><li> </li></ul></div><p>Read last.</p>'],
+        ['name' => 'privacyConsent', 'value' => false, 'isRequired' => true],
+    ],
+];
+$originalForm = $checklistForm;
+$label = static fn (int $number) => "Requirement $number";
+\APP\plugins\themes\encounters\SubmissionChecklist::configure($checklistForm, $label);
+check(count($checklistForm['fields']) === 5, 'Nested or blank list items became extra requirements');
+check($checklistForm['fields'][0] === $originalForm['fields'][0] && $checklistForm['fields'][4] === $originalForm['fields'][2], 'Submission fields outside the checklist changed');
+check(str_contains($checklistForm['fields'][1]['description'], 'Read first.') && str_contains($checklistForm['fields'][1]['description'], 'Read last.'), 'Checklist guidance was lost');
+foreach (array_slice($checklistForm['fields'], 2, 2) as $field) {
+    check($field['isRequired'] === true && $field['value'] === false && count($field['options']) === 1, 'Each requirement must start unchecked and be required');
+}
+check(str_contains($checklistForm['fields'][2]['options'][0]['label'], 'Français &amp; Español') && str_contains($checklistForm['fields'][2]['options'][0]['label'], 'Nested detail'), 'Checklist text or nested content changed');
+check(str_contains($checklistForm['fields'][3]['options'][0]['label'], 'href="/form.docx"'), 'Checklist download link was lost');
+$configuredForm = $checklistForm;
+\APP\plugins\themes\encounters\SubmissionChecklist::configure($checklistForm, $label);
+check($checklistForm === $configuredForm, 'Repeated configuration duplicates requirements');
+foreach (['', '<p>Checklist without list markup.</p>'] as $description) {
+    $fallback = $originalForm;
+    $fallback['fields'][1]['description'] = $description;
+    $expected = $fallback;
+    \APP\plugins\themes\encounters\SubmissionChecklist::configure($fallback, $label);
+    check($fallback === $expected, 'A prose-only checklist lost its original confirmation');
+}
+$otherForm = $originalForm;
+$otherForm['id'] = 'submissionGuidance';
+$expected = $otherForm;
+\APP\plugins\themes\encounters\SubmissionChecklist::configure($otherForm, $label);
+check($otherForm === $expected, 'Another OJS form was changed');
+
 $translationLoader = new Gettext\Loader\PoLoader();
 $translations = $translationLoader->loadFile($pluginRoot . '/locale/en/locale.po');
 $catalogs = [];

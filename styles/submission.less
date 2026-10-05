@@ -1,0 +1,80 @@
+@import "fonts.less";
+
+@submission-paper: #f5f0ea;
+@submission-wine: #6b2033;
+@submission-accent: #85283d;
+@submission-rule: #e3dbd2;
+
+.pkp_page_submission {
+    .app__header:has(.encounters-submission-brand) {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 12px 16px;
+        background: @submission-wine;
+        .app__contextTitle { display: none; }
+    }
+
+    .encounters-submission-brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+        max-width: 100%;
+        margin-inline-end: auto;
+        color: @submission-paper;
+        text-decoration: none;
+        img { flex: 0 0 64px; width: 64px; height: 48px; object-fit: contain; }
+        > span { min-width: 0; }
+        &:hover { color: @submission-paper; }
+        &:focus-visible { outline: 2px solid @submission-paper; outline-offset: 4px; }
+    }
+
+    .encounters-submission-brand__title {
+        display: block;
+        font: 700 36px/1.1 "Cormorant Garamond", Georgia, serif;
+        overflow-wrap: anywhere;
+    }
+
+    .encounters-submission-brand__tagline {
+        display: block;
+        margin-top: 4px;
+        font: 400 11px/1.5 Lora, Georgia, serif;
+        text-transform: uppercase;
+        overflow-wrap: anywhere;
+    }
+
+    .encounters-checklist-introduction { margin-bottom: 16px; }
+
+    .pkpFormGroup__fields > .encounters-submission-requirement {
+        margin-top: 0;
+        padding: 16px;
+        border: 1px solid @submission-rule;
+        border-radius: 0;
+        background: #fff;
+        + .encounters-submission-requirement { border-top: 0; }
+        > legend {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            overflow: hidden;
+            clip-path: inset(50%);
+            white-space: nowrap;
+        }
+        input[type="checkbox"] {
+            flex-shrink: 0;
+            width: 16px;
+            height: 16px;
+            accent-color: @submission-accent;
+            &:focus-visible { outline: 2px solid @submission-accent; outline-offset: 3px; }
+        }
+        a { color: @submission-accent; text-decoration: underline; }
+        p:first-child { margin-top: 0; }
+        p:last-child { margin-bottom: 0; }
+    }
+
+    @media (max-width: 600px) {
+        .encounters-submission-brand { flex-basis: 100%; }
+        .encounters-submission-brand__title { font-size: 30px; }
+    }
+}

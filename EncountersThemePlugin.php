@@ -156,6 +156,10 @@ class EncountersThemePlugin extends ThemePlugin
 
         $this->addMenuArea(['primary', 'user']);
         $this->addStyle($this->getStylesheetName(), 'styles/index.less');
+        $this->addStyle($this->getStylesheetName() . '-submission', 'styles/submission.less', [
+            'contexts' => ['backend'],
+            'priority' => TemplateManager::STYLE_SEQUENCE_LATE,
+        ]);
 
         // Core frontend templates and other OJS plugins use these core assets.
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
@@ -172,6 +176,23 @@ class EncountersThemePlugin extends ThemePlugin
         Hook::add('TemplateManager::display', $this->prepareTemplate(...));
         Hook::add('TemplateManager::fetch', $this->prepareDashboardMenuItem(...));
         Hook::add('Locale::translate', $this->translateSearchResults(...));
+        Hook::add('Form::config::after', $this->prepareSubmissionForm(...));
+        Hook::add('Template::Layout::Backend::HeaderActions', $this->renderSubmissionBranding(...));
+    }
+
+    public function prepareSubmissionForm(string $hookName, array $args): bool
+    {
+        SubmissionChecklist::configure($args[0], fn (int $number) => __('plugins.themes.encounters.submissionRequirement', ['number' => $number]));
+        return Hook::CONTINUE;
+    }
+
+    public function renderSubmissionBranding(string $hookName, array $args): bool
+    {
+        $templateManager = $args[1];
+        if ($templateManager->getTemplateVars('encountersSubmissionPage')) {
+            $args[2] .= $templateManager->fetch($this->getTemplateResource('submission/branding.tpl'));
+        }
+        return Hook::CONTINUE;
     }
 
     public function getMastheadTagline(string $locale): string
@@ -419,6 +440,12 @@ class EncountersThemePlugin extends ThemePlugin
     public function prepareTemplate(string $hookName, array $args): bool
     {
         [$templateManager, $template] = $args;
+        if (str_starts_with((string) $template, 'submission/')) {
+            $templateManager->assign([
+                'encountersSubmissionPage' => true,
+                'encountersThemeUrl' => $this->_getBaseUrl(),
+            ]);
+        }
         if (!str_starts_with((string) $template, 'frontend/')) {
             return Hook::CONTINUE;
         }
