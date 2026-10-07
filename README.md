@@ -24,8 +24,8 @@ Developed and tested with OJS 3.5.0-5.
    php lib/pkp/tools/installPluginVersion.php plugins/themes/encounters/version.xml
    ```
 
-4. Log in to your journal dashboard and go to **Settings > Website > Appearance**.
-5. Select **Encounters** from the list of available themes and save your changes.
+4. Log in to your journal dashboard and go to **Settings > Website > Plugins > Installed Plugins**. Under **Theme Plugins**, enable **Encounters**.
+5. Go to **Settings > Website > Appearance**, select **Encounters**, and save your changes.
 
 ## Usage
 

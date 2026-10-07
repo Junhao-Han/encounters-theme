@@ -12,7 +12,8 @@ if not version or not all(part.isdecimal() for part in version.split(".")):
     raise SystemExit("Invalid plugin release version")
 
 files = [root / name for name in (
-    "index.php", "EncountersThemePlugin.php", "version.xml", "LICENSE", "README.md"
+    "index.php", "EncountersThemePlugin.php", "SubmissionChecklist.php",
+    "version.xml", "LICENSE", "README.md"
 )]
 for directory, suffixes in {
     "templates": {".tpl"}, "styles": {".less"},
