@@ -164,3 +164,6 @@ msgstr "Saisir une adresse http:// ou https://. Laisser ce champ vide pour masqu
 
 msgid "plugins.themes.encounters.exploreSeries"
 msgstr "Découvrir la collection"
+
+msgid "common.help"
+msgstr "Aide"

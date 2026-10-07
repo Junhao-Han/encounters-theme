@@ -164,3 +164,6 @@ msgstr "Introduzca una dirección http:// o https://. Deje este campo vacío par
 
 msgid "plugins.themes.encounters.exploreSeries"
 msgstr "Explorar la serie"
+
+msgid "common.help"
+msgstr "Ayuda"
