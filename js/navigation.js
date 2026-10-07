@@ -47,6 +47,11 @@
         setOpen(open);
         if (!open) closeSubmenus();
     });
+    toggle.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape' || desktop.matches) return;
+        setOpen(false);
+        closeSubmenus();
+    });
     menu.addEventListener('keydown', (event) => {
         if (event.key !== 'Escape') return;
         const active = submenus.find(({button}) => button.getAttribute('aria-expanded') === 'true');

@@ -116,6 +116,17 @@ test('submenu disclosure preserves the parent link and closes on Escape', () => 
     assert.equal(button.focused, true);
 });
 
+test('Escape on the mobile Menu button closes the menu and its submenus', () => {
+    const {toggle, menu, button, submenu} = navigationFixture();
+    toggle.click();
+    button.click();
+    toggle.emit('keydown', {key: 'Escape'});
+    assert.equal(toggle.getAttribute('aria-expanded'), 'false');
+    assert.equal(menu.classList.contains('pkp_site_nav_menu--isOpen'), false);
+    assert.equal(button.getAttribute('aria-expanded'), 'false');
+    assert.equal(submenu.hidden, true);
+});
+
 test('outside clicks and breakpoint changes reset expanded menus', () => {
     const {document, toggle, button, submenu, desktop} = navigationFixture();
     toggle.click();
