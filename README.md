@@ -27,12 +27,6 @@ Developed and tested with OJS 3.5.0-5.
 4. Log in to your journal dashboard and go to **Settings > Website > Plugins > Installed Plugins**. Under **Theme Plugins**, enable **Encounters**.
 5. Go to **Settings > Website > Appearance**, select **Encounters**, and save your changes.
 
-## Usage
-
-Once the theme is installed, you can change the theme settings under **Settings > Website > Appearance**.
-
-The Encounters logo, header text, Hero text, and navigation menu have default values. You can change them in the theme settings.
-
 ### Hero Image
 
 Upload the image under **Appearance > Setup > Homepage Image**. In the theme settings, use **Homepage image link** to choose the published issue that opens when the image is clicked.
