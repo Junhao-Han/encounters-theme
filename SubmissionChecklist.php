@@ -8,6 +8,24 @@ use DOMXPath;
 /** Turn the journal's checklist into required OJS form fields. */
 class SubmissionChecklist
 {
+    public static function configureEditor(array &$config, callable $translate): void
+    {
+        if (($config['id'] ?? '') !== 'submissionGuidanceSettings') {
+            return;
+        }
+        foreach ($config['fields'] as &$field) {
+            if ($field['name'] !== 'submissionChecklist') {
+                continue;
+            }
+            $field['component'] = 'encounters-checklist-editor';
+            $field['description'] = $translate('description');
+            foreach (['introduction', 'requirement', 'add', 'remove', 'up', 'down', 'empty', 'blank', 'undo'] as $key) {
+                $field['editorLabels'][$key] = $translate($key);
+            }
+            return;
+        }
+    }
+
     public static function configure(array &$config, callable $requirementLabel): void
     {
         if (($config['id'] ?? '') !== 'startSubmission') {

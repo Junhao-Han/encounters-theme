@@ -160,6 +160,11 @@ class EncountersThemePlugin extends ThemePlugin
             'contexts' => ['backend'],
             'priority' => TemplateManager::STYLE_SEQUENCE_LATE,
         ]);
+        $this->addStyle($this->getStylesheetName() . '-checklist-editor', 'styles/checklist-editor.less', ['contexts' => ['backend']]);
+        $this->addScript('encounters-checklist-editor', 'js/checklist-editor.js', [
+            'contexts' => ['backend'],
+            'priority' => TemplateManager::STYLE_SEQUENCE_LAST,
+        ]);
 
         // Core frontend templates and other OJS plugins use these core assets.
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
@@ -183,6 +188,7 @@ class EncountersThemePlugin extends ThemePlugin
     public function prepareSubmissionForm(string $hookName, array $args): bool
     {
         SubmissionChecklist::configure($args[0], fn (int $number) => __('plugins.themes.encounters.submissionRequirement', ['number' => $number]));
+        SubmissionChecklist::configureEditor($args[0], fn (string $key) => __('plugins.themes.encounters.checklistEditor.' . $key));
         return Hook::CONTINUE;
     }
 

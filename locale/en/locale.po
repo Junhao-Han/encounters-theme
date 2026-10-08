@@ -167,3 +167,33 @@ msgstr "Explore the Series"
 
 msgid "common.help"
 msgstr "Help"
+
+msgid "plugins.themes.encounters.checklistEditor.description"
+msgstr "Write each requirement in its own field. Authors must confirm every requirement before beginning a submission."
+
+msgid "plugins.themes.encounters.checklistEditor.introduction"
+msgstr "Introduction (optional)"
+
+msgid "plugins.themes.encounters.checklistEditor.requirement"
+msgstr "Requirement {$number}"
+
+msgid "plugins.themes.encounters.checklistEditor.add"
+msgstr "Add requirement"
+
+msgid "plugins.themes.encounters.checklistEditor.remove"
+msgstr "Delete"
+
+msgid "plugins.themes.encounters.checklistEditor.up"
+msgstr "Move up"
+
+msgid "plugins.themes.encounters.checklistEditor.down"
+msgstr "Move down"
+
+msgid "plugins.themes.encounters.checklistEditor.empty"
+msgstr "No requirements yet. Use “Add requirement” to create one."
+
+msgid "plugins.themes.encounters.checklistEditor.blank"
+msgstr "Empty requirements are not saved. Use the Save button below to apply your changes."
+
+msgid "plugins.themes.encounters.checklistEditor.undo"
+msgstr "Undo deletion"

@@ -75,6 +75,29 @@ $expected = $otherForm;
 \APP\plugins\themes\encounters\SubmissionChecklist::configure($otherForm, $label);
 check($otherForm === $expected, 'Another OJS form was changed');
 
+$editorForm = ['id' => 'submissionGuidanceSettings', 'fields' => [
+    ['name' => 'authorGuidelines', 'value' => ['en' => '<p>Keep this.</p>']],
+    ['name' => 'submissionChecklist', 'component' => 'field-rich-textarea', 'isMultilingual' => true,
+        'value' => ['en' => '<p>Read first.</p><ul><li><a href="/form.docx">Form</a></li></ul>', 'es' => '<ul><li>Español</li></ul>', 'fr' => '<p>Français</p>']],
+    ['name' => 'copyrightNotice', 'value' => ['en' => '<p>Copyright unchanged.</p>']],
+]];
+$originalEditor = $editorForm;
+\APP\plugins\themes\encounters\SubmissionChecklist::configureEditor($editorForm, fn ($key) => $key);
+check($editorForm['fields'][1]['component'] === 'encounters-checklist-editor', 'Checklist editor not registered');
+check($editorForm['fields'][1]['value'] === $originalEditor['fields'][1]['value'], 'Editor configuration changes saved multilingual content');
+check($editorForm['fields'][0] === $originalEditor['fields'][0] && $editorForm['fields'][2] === $originalEditor['fields'][2], 'Editor replaces unrelated fields');
+$configuredEditor = $editorForm;
+\APP\plugins\themes\encounters\SubmissionChecklist::configureEditor($editorForm, fn ($key) => $key);
+check($editorForm === $configuredEditor, 'Repeated editor configuration changes the form');
+$unrelatedForm = $originalEditor;
+$unrelatedForm['id'] = 'anotherForm';
+$expected = $unrelatedForm;
+\APP\plugins\themes\encounters\SubmissionChecklist::configureEditor($unrelatedForm, fn ($key) => $key);
+check($unrelatedForm === $expected, 'Checklist editor changes another form');
+$editorLess = new Less_Parser();
+$editorLess->parseFile($pluginRoot . '/styles/checklist-editor.less');
+check(str_contains($editorLess->getCss(), '.encounters-checklist-editor__item'), 'Checklist editor CSS does not compile');
+
 $translationLoader = new Gettext\Loader\PoLoader();
 $translations = $translationLoader->loadFile($pluginRoot . '/locale/en/locale.po');
 $catalogs = [];

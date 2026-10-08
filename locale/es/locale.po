@@ -167,3 +167,33 @@ msgstr "Explorar la serie"
 
 msgid "common.help"
 msgstr "Ayuda"
+
+msgid "plugins.themes.encounters.checklistEditor.description"
+msgstr "Escriba cada requisito en un campo separado. Los autores deben confirmar todos los requisitos antes de iniciar un envío."
+
+msgid "plugins.themes.encounters.checklistEditor.introduction"
+msgstr "Introducción (opcional)"
+
+msgid "plugins.themes.encounters.checklistEditor.requirement"
+msgstr "Requisito {$number}"
+
+msgid "plugins.themes.encounters.checklistEditor.add"
+msgstr "Añadir requisito"
+
+msgid "plugins.themes.encounters.checklistEditor.remove"
+msgstr "Eliminar"
+
+msgid "plugins.themes.encounters.checklistEditor.up"
+msgstr "Subir"
+
+msgid "plugins.themes.encounters.checklistEditor.down"
+msgstr "Bajar"
+
+msgid "plugins.themes.encounters.checklistEditor.empty"
+msgstr "Todavía no hay requisitos. Use «Añadir requisito» para crear uno."
+
+msgid "plugins.themes.encounters.checklistEditor.blank"
+msgstr "Los requisitos vacíos no se guardan. Use el botón Guardar de abajo para aplicar los cambios."
+
+msgid "plugins.themes.encounters.checklistEditor.undo"
+msgstr "Deshacer eliminación"

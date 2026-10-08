@@ -167,3 +167,33 @@ msgstr "Découvrir la collection"
 
 msgid "common.help"
 msgstr "Aide"
+
+msgid "plugins.themes.encounters.checklistEditor.description"
+msgstr "Saisissez chaque exigence dans un champ distinct. Les auteurs doivent confirmer toutes les exigences avant de commencer une soumission."
+
+msgid "plugins.themes.encounters.checklistEditor.introduction"
+msgstr "Introduction (facultative)"
+
+msgid "plugins.themes.encounters.checklistEditor.requirement"
+msgstr "Exigence {$number}"
+
+msgid "plugins.themes.encounters.checklistEditor.add"
+msgstr "Ajouter une exigence"
+
+msgid "plugins.themes.encounters.checklistEditor.remove"
+msgstr "Supprimer"
+
+msgid "plugins.themes.encounters.checklistEditor.up"
+msgstr "Monter"
+
+msgid "plugins.themes.encounters.checklistEditor.down"
+msgstr "Descendre"
+
+msgid "plugins.themes.encounters.checklistEditor.empty"
+msgstr "Aucune exigence pour le moment. Utilisez « Ajouter une exigence » pour en créer une."
+
+msgid "plugins.themes.encounters.checklistEditor.blank"
+msgstr "Les exigences vides ne sont pas enregistrées. Utilisez le bouton Enregistrer ci-dessous pour appliquer vos modifications."
+
+msgid "plugins.themes.encounters.checklistEditor.undo"
+msgstr "Annuler la suppression"
