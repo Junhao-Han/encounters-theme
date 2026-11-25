@@ -1,0 +1,199 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Encounters 0.1.0\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "plugins.themes.encounters.name"
+msgstr "Encounters"
+
+msgid "plugins.themes.encounters.submissionRequirement"
+msgstr "Exigence {$number}"
+
+msgid "plugins.themes.encounters.description"
+msgstr "Un thème autonome pour la revue Encounters."
+
+msgid "plugins.themes.encounters.mastheadTitle"
+msgstr "Nom court de la revue dans l’en-tête"
+
+msgid "plugins.themes.encounters.mastheadLogo"
+msgstr "Logo de l’en-tête"
+
+msgid "plugins.themes.encounters.mastheadLogo.description"
+msgstr "Choisir le logo inclus ou celui de la revue téléversé dans Apparence > Configuration. Le titre et le sous-titre restent visibles. Si aucun logo n’a été téléversé, celui d’Encounters est utilisé."
+
+msgid "plugins.themes.encounters.mastheadLogo.default"
+msgstr "Logo d’Encounters"
+
+msgid "plugins.themes.encounters.mastheadLogo.uploaded"
+msgstr "Logo téléversé de la revue"
+
+msgid "plugins.themes.encounters.sidebar"
+msgstr "Barre latérale"
+
+msgid "plugins.themes.encounters.sidebar.description"
+msgstr "Afficher les blocs de la barre latérale configurés pour la revue sur les pages intérieures. Les blocs existants sont conservés lorsqu’ils sont masqués. La page d’accueil utilise toujours la mise en page pleine largeur."
+
+msgid "plugins.themes.encounters.sidebar.hide"
+msgstr "Masquée"
+
+msgid "plugins.themes.encounters.sidebar.show"
+msgstr "Afficher la barre latérale d’OJS"
+
+msgid "plugins.themes.encounters.mastheadTagline"
+msgstr "Sous-titre de la revue dans l’en-tête — Anglais"
+
+msgid "plugins.themes.encounters.mastheadTaglineEs"
+msgstr "Sous-titre de la revue dans l’en-tête — Espagnol"
+
+msgid "plugins.themes.encounters.mastheadTaglineFr"
+msgstr "Sous-titre de la revue dans l’en-tête — Français"
+
+msgid "plugins.themes.encounters.primaryMenu"
+msgstr "Navigation principale"
+
+msgid "plugins.themes.encounters.primaryMenu.description"
+msgstr "Utiliser le menu d’Encounters ou celui configuré dans les menus de navigation. Les menus existants et le contenu des pages de la revue sont conservés."
+
+msgid "plugins.themes.encounters.aboutMenu"
+msgstr "Sous-menu À propos"
+
+msgid "plugins.themes.encounters.aboutMenu.description"
+msgstr "Utiliser les liens d’Encounters ou les liens configurés dans les menus de navigation."
+
+msgid "plugins.themes.encounters.aboutMenu.default"
+msgstr "Liens par défaut d’Encounters"
+
+msgid "plugins.themes.encounters.aboutMenu.custom"
+msgstr "Menu de navigation OJS"
+
+msgid "plugins.themes.encounters.editorialTeam"
+msgstr "Équipe éditoriale"
+
+msgid "plugins.themes.encounters.introductionTitleEn"
+msgstr "Nom de la revue sur la page d’accueil — anglais"
+
+msgid "plugins.themes.encounters.introductionTitleEs"
+msgstr "Nom de la revue sur la page d’accueil — espagnol"
+
+msgid "plugins.themes.encounters.introductionTitleFr"
+msgstr "Nom de la revue sur la page d’accueil — français"
+
+msgid "plugins.themes.encounters.introductionDescription"
+msgstr "Présentation de la page d’accueil — Anglais"
+
+msgid "plugins.themes.encounters.introductionDescriptionEs"
+msgstr "Présentation de la page d’accueil — Espagnol"
+
+msgid "plugins.themes.encounters.introductionDescriptionFr"
+msgstr "Présentation de la page d’accueil — Français"
+
+msgid "plugins.themes.encounters.recentIssues"
+msgstr "Numéros récents"
+
+msgid "plugins.themes.encounters.menu"
+msgstr "Menu"
+
+msgid "plugins.themes.encounters.displayStats"
+msgstr "Statistiques de téléchargement des articles"
+
+msgid "plugins.themes.encounters.displayStats.none"
+msgstr "Masquer les statistiques"
+
+msgid "plugins.themes.encounters.displayStats.bar"
+msgstr "Diagramme à barres"
+
+msgid "plugins.themes.encounters.displayStats.line"
+msgstr "Graphique en courbes"
+
+msgid "plugins.themes.encounters.submenu"
+msgstr "Afficher le sous-menu : {$title}"
+
+msgid "plugins.themes.encounters.noIssues"
+msgstr "Les numéros publiés apparaîtront ici."
+
+msgid "plugins.themes.encounters.heroIssue"
+msgstr "Lien de l’image de la page d’accueil"
+
+msgid "plugins.themes.encounters.heroIssue.description"
+msgstr "Choisissez le numéro publié à ouvrir lorsque l’image de la page d’accueil est sélectionnée. Téléversez l’image dans Apparence > Configuration."
+
+msgid "plugins.themes.encounters.heroIssue.none"
+msgstr "Aucun lien"
+
+msgid "plugins.themes.encounters.recentArticles"
+msgstr "Articles à paraître"
+
+msgid "plugins.themes.encounters.noArticles"
+msgstr "Il n’y a actuellement aucun article à paraître."
+
+msgid "plugins.themes.encounters.forthcomingIssue"
+msgstr "Numéro source des articles à paraître"
+
+msgid "plugins.themes.encounters.forthcomingIssue.description"
+msgstr "Choisissez un numéro publié destiné aux articles en publication anticipée. Ses trois articles publiés les plus récents apparaîtront automatiquement dans Articles à paraître. Ce numéro est exclu des Numéros récents."
+
+msgid "plugins.themes.encounters.forthcomingIssue.none"
+msgstr "Aucun numéro sélectionné"
+
+msgid "plugins.themes.encounters.announcementsIntro"
+msgstr "Actualités et informations de la revue."
+
+msgid "plugins.themes.encounters.viewAnnouncements"
+msgstr "Voir les annonces"
+
+msgid "plugins.themes.encounters.monographSeries"
+msgstr "Collection de monographies"
+
+msgid "plugins.themes.encounters.monographDescription"
+msgstr "Description de la collection de monographies — Anglais"
+
+msgid "plugins.themes.encounters.monographDescriptionEs"
+msgstr "Description de la collection de monographies — Espagnol"
+
+msgid "plugins.themes.encounters.monographDescriptionFr"
+msgstr "Description de la collection de monographies — Français"
+
+msgid "plugins.themes.encounters.monographUrl"
+msgstr "Site web de la collection de monographies"
+
+msgid "plugins.themes.encounters.monographUrl.description"
+msgstr "Saisir une adresse http:// ou https://. Laisser ce champ vide pour masquer la carte."
+
+msgid "plugins.themes.encounters.exploreSeries"
+msgstr "Découvrir la collection"
+
+msgid "common.help"
+msgstr "Aide"
+
+msgid "plugins.themes.encounters.checklistEditor.description"
+msgstr "Saisissez chaque exigence dans un champ distinct. Les auteurs doivent confirmer toutes les exigences avant de commencer une soumission."
+
+msgid "plugins.themes.encounters.checklistEditor.introduction"
+msgstr "Introduction (facultative)"
+
+msgid "plugins.themes.encounters.checklistEditor.requirement"
+msgstr "Exigence {$number}"
+
+msgid "plugins.themes.encounters.checklistEditor.add"
+msgstr "Ajouter une exigence"
+
+msgid "plugins.themes.encounters.checklistEditor.remove"
+msgstr "Supprimer"
+
+msgid "plugins.themes.encounters.checklistEditor.up"
+msgstr "Monter"
+
+msgid "plugins.themes.encounters.checklistEditor.down"
+msgstr "Descendre"
+
+msgid "plugins.themes.encounters.checklistEditor.empty"
+msgstr "Aucune exigence pour le moment. Utilisez « Ajouter une exigence » pour en créer une."
+
+msgid "plugins.themes.encounters.checklistEditor.blank"
+msgstr "Les exigences vides ne sont pas enregistrées. Utilisez le bouton Enregistrer ci-dessous pour appliquer vos modifications."
+
+msgid "plugins.themes.encounters.checklistEditor.undo"
+msgstr "Annuler la suppression"

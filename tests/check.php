@@ -100,10 +100,14 @@ check(str_contains($editorLess->getCss(), '.encounters-checklist-editor__item'),
 
 $translationLoader = new Gettext\Loader\PoLoader();
 $translations = $translationLoader->loadFile($pluginRoot . '/locale/en/locale.po');
+$localeService = new \PKP\i18n\Locale();
+foreach ([$ojsRoot . '/lib/pkp/locale', $ojsRoot . '/locale', $pluginRoot . '/locale'] as $path) {
+    $localeService->registerPath($path);
+}
+$localeService->registerPath($pluginRoot . '/locale/frontend', 1);
 $catalogs = [];
-foreach (['en', 'es', 'fr'] as $locale) {
-    $files = array_merge(glob($ojsRoot . '/lib/pkp/locale/' . $locale . '/*.po'), glob($ojsRoot . '/locale/' . $locale . '/*.po'), [$pluginRoot . '/locale/' . $locale . '/locale.po'], glob($pluginRoot . '/locale/frontend/' . $locale . '/*.po'));
-    foreach ($files as $file) {
+foreach (['en', 'es', 'fr', 'fr_CA'] as $locale) {
+    foreach (array_keys($localeService->getBundle($locale)->getEntries()) as $file) {
         foreach ($translationLoader->loadFile($file) as $translation) {
             if ($translation->getTranslation() !== '') {
                 $catalogs[$locale][$translation->getOriginal()] = $translation->getTranslation();
@@ -111,6 +115,10 @@ foreach (['en', 'es', 'fr'] as $locale) {
         }
     }
 }
+foreach ($translations as $translation) {
+    check(!empty($catalogs['fr_CA'][$translation->getOriginal()]), 'Missing Canadian French theme translation: ' . $translation->getOriginal());
+}
+check($catalogs['fr_CA']['plugins.themes.encounters.monographSeries'] === 'Collection de monographies', 'Canadian French menu translation is incorrect');
 foreach ([$pluginRoot . '/templates', $ojsRoot . '/templates/frontend', $ojsRoot . '/lib/pkp/templates/frontend'] as $templateRoot) {
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($templateRoot, FilesystemIterator::SKIP_DOTS)) as $file) {
         if ($file->getExtension() !== 'tpl') continue;
@@ -126,7 +134,7 @@ foreach ([$pluginRoot . '/templates', $ojsRoot . '/templates/frontend', $ojsRoot
         }
     }
 }
-foreach (['fr', 'es'] as $locale) {
+foreach (['fr', 'fr_CA', 'es'] as $locale) {
     foreach ($translationLoader->loadFile($pluginRoot . '/locale/frontend/' . $locale . '/locale.po') as $translation) {
         $key = $translation->getOriginal();
         check(isset($catalogs['en'][$key]), 'Unknown OJS translation key: ' . $key);
@@ -138,7 +146,7 @@ foreach (['fr', 'es'] as $locale) {
         check($expected[0] === $actual[0], 'Changed frontend translation placeholders: ' . $key);
     }
 }
-foreach (['fr', 'es'] as $locale) {
+foreach (['fr', 'fr_CA', 'es'] as $locale) {
     $localized = $translationLoader->loadFile($pluginRoot . '/locale/' . $locale . '/locale.po');
     foreach ($translations as $translation) {
         $message = $localized->find(null, $translation->getOriginal())?->getTranslation();
@@ -235,7 +243,7 @@ try {
     ]);
     $smarty->error_reporting = E_ALL & ~E_DEPRECATED;
     $smarty->registerPlugin('function', 'translate', static function (array $params) use ($catalogs, $smarty): string {
-        $locale = substr($smarty->getTemplateVars('currentLocale') ?? 'en', 0, 2);
+        $locale = $smarty->getTemplateVars('currentLocale') ?? 'en';
         $message = $catalogs[$locale][$params['key']] ?? $catalogs['en'][$params['key']] ?? $params['key'];
         foreach ($params as $key => $value) {
             if ($key !== 'key') {
@@ -327,17 +335,25 @@ try {
     check(str_contains($html, 'https://example.org/series?a=1&amp;b=2'), 'Series URL is not escaped');
     check(str_contains($html, 'History &amp; &lt;script&gt;bad&lt;/script&gt;'), 'Series description is not escaped');
 
-    $articleDates = ['en' => 'September 9, 2026', 'es' => '9 de septiembre de 2026', 'fr' => '9 septembre 2026'];
-    foreach (['en' => 'History &amp; &lt;education&gt;', 'es' => 'Historia &amp; &lt;educación&gt;', 'fr' => 'Histoire &amp; &lt;éducation&gt;'] as $locale => $description) {
+    $articleDates = ['en' => 'September 9, 2026', 'es' => '9 de septiembre de 2026', 'fr' => '9 septembre 2026', 'fr_CA' => '9 septembre 2026'];
+    foreach (['en' => 'History &amp; &lt;education&gt;', 'es' => 'Historia &amp; &lt;educación&gt;', 'fr' => 'Histoire &amp; &lt;éducation&gt;', 'fr_CA' => 'Histoire &amp; &lt;éducation&gt;'] as $locale => $description) {
         $smarty->assign(['currentLocale' => $locale, 'encountersMonographDescription' => (new FixtureTheme())->getMonographDescription($locale)]);
         $localizedHome = $smarty->fetch('frontend/pages/indexJournal.tpl');
         check(str_contains($localizedHome, '<p>' . $description . '</p>'), 'Monograph description is not localized or escaped: ' . $locale);
         check(str_contains($localizedHome, 'datetime="2026-09-09">' . $articleDates[$locale] . '</time>'), 'Article date does not follow the language format: ' . $locale);
         check(substr_count($localizedHome, 'class="encounters-article-date"') === 1, 'Missing article date is replaced with a fabricated date');
-        foreach (['recentIssues', 'recentArticles', 'exploreSeries'] as $key) {
+        foreach (['recentIssues', 'recentArticles', 'monographSeries', 'exploreSeries'] as $key) {
             check(str_contains($localizedHome, $catalogs[$locale]['plugins.themes.encounters.' . $key]), 'Homepage section or button is not localized: ' . $key);
         }
     }
+    $recentArticles = $smarty->getTemplateVars('encountersRecentArticles');
+    $announcements = $smarty->getTemplateVars('encountersAnnouncements');
+    $smarty->assign(['encountersRecentArticles' => [], 'encountersAnnouncements' => []]);
+    $emptyFrenchHome = $smarty->fetch('frontend/pages/indexJournal.tpl');
+    foreach (['noArticles', 'announcementsIntro', 'viewAnnouncements'] as $key) {
+        check(str_contains($emptyFrenchHome, $catalogs['fr_CA']['plugins.themes.encounters.' . $key]), 'Canadian French empty-state translation is missing: ' . $key);
+    }
+    $smarty->assign(['encountersRecentArticles' => $recentArticles, 'encountersAnnouncements' => $announcements]);
     check((new FixtureTheme(overrides: ['monographDescriptionFr' => '']))->getMonographDescription('fr') === '', 'Empty monograph description falls back to English');
     $smarty->assign(['currentLocale' => 'en', 'encountersMonographDescription' => 'History & <script>bad</script>']);
 
@@ -510,7 +526,7 @@ try {
     foreach (['en', 'es', 'fr'] as $locale) $series->setTitle('Monograph Series', $locale);
     $localizedItems[] = (object) ['navigationMenuItem' => $series, 'children' => []];
     $smarty->assign(['activeTheme' => new FixtureTheme(overrides: ['monographUrl' => 'https://example.org/series']), 'navigationMenu' => (object) ['menuTree' => $localizedItems]]);
-    foreach (['en', 'es', 'fr'] as $locale) {
+    foreach (['en', 'es', 'fr', 'fr_CA'] as $locale) {
         $smarty->assign('currentLocale', $locale);
         $localizedMenu = $smarty->fetch('frontend/components/navigationMenu.tpl');
         foreach ($navigationKeys as $key) {
@@ -543,7 +559,7 @@ try {
     $journalBefore = serialize($journal);
     $defaultTheme = new FixtureTheme(overrides: ['primaryMenu' => 'default', 'monographUrl' => 'https://example.org/series?a=1&b=2']);
     $primaryKeys = ['navigation.about', 'about.submissions', 'navigation.current', 'navigation.archives', 'announcement.announcements', 'plugins.themes.encounters.monographSeries'];
-    foreach (['en', 'es', 'fr'] as $locale) {
+    foreach (['en', 'es', 'fr', 'fr_CA'] as $locale) {
         $smarty->assign(['activeTheme' => $defaultTheme, 'navigationMenu' => null, 'currentLocale' => $locale]);
         $defaultNavigation = $smarty->fetch('frontend/components/navigationMenu.tpl');
         $menuDom->loadHTML('<?xml encoding="UTF-8">' . $defaultNavigation);
@@ -656,7 +672,7 @@ try {
     echo "PASS: default branding, optional uploaded logo and sidebar visibility.\n";
     echo "PASS: default About menu, custom menu option and menu isolation.\n";
     echo "PASS: default primary navigation, existing page links and saved content preservation.\n";
-    echo "PASS: three-language navigation, homepage content and shared frontend translation keys.\n";
+    echo "PASS: English, Spanish, French and Canadian French navigation and homepage translations.\n";
     echo "Installation, database filtering and browser appearance still require live testing.\n";
 } finally {
     $items = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($temporary, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST);
