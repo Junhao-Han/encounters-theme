@@ -16,7 +16,13 @@ msgid "plugins.themes.encounters.description"
 msgstr "Un thème autonome pour la revue Encounters."
 
 msgid "plugins.themes.encounters.mastheadTitle"
-msgstr "Nom court de la revue dans l’en-tête"
+msgstr "Titre de l’en-tête — Anglais"
+
+msgid "plugins.themes.encounters.mastheadTitleEs"
+msgstr "Titre de l’en-tête — Espagnol"
+
+msgid "plugins.themes.encounters.mastheadTitleFr"
+msgstr "Titre de l’en-tête — Français"
 
 msgid "plugins.themes.encounters.mastheadLogo"
 msgstr "Logo de l’en-tête"
@@ -43,13 +49,13 @@ msgid "plugins.themes.encounters.sidebar.show"
 msgstr "Afficher la barre latérale d’OJS"
 
 msgid "plugins.themes.encounters.mastheadTagline"
-msgstr "Sous-titre de la revue dans l’en-tête — Anglais"
+msgstr "Sous-titre de l’en-tête — Anglais"
 
 msgid "plugins.themes.encounters.mastheadTaglineEs"
-msgstr "Sous-titre de la revue dans l’en-tête — Espagnol"
+msgstr "Sous-titre de l’en-tête — Espagnol"
 
 msgid "plugins.themes.encounters.mastheadTaglineFr"
-msgstr "Sous-titre de la revue dans l’en-tête — Français"
+msgstr "Sous-titre de l’en-tête — Français"
 
 msgid "plugins.themes.encounters.primaryMenu"
 msgstr "Navigation principale"

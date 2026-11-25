@@ -16,7 +16,13 @@ msgid "plugins.themes.encounters.description"
 msgstr "Un tema independiente para la revista Encounters."
 
 msgid "plugins.themes.encounters.mastheadTitle"
-msgstr "Nombre corto de la revista en la cabecera"
+msgstr "Título de la cabecera — Inglés"
+
+msgid "plugins.themes.encounters.mastheadTitleEs"
+msgstr "Título de la cabecera — Español"
+
+msgid "plugins.themes.encounters.mastheadTitleFr"
+msgstr "Título de la cabecera — Francés"
 
 msgid "plugins.themes.encounters.mastheadLogo"
 msgstr "Logotipo de la cabecera"
@@ -43,13 +49,13 @@ msgid "plugins.themes.encounters.sidebar.show"
 msgstr "Mostrar la barra lateral de OJS"
 
 msgid "plugins.themes.encounters.mastheadTagline"
-msgstr "Subtítulo de la revista en la cabecera — Inglés"
+msgstr "Subtítulo de la cabecera — Inglés"
 
 msgid "plugins.themes.encounters.mastheadTaglineEs"
-msgstr "Subtítulo de la revista en la cabecera — Español"
+msgstr "Subtítulo de la cabecera — Español"
 
 msgid "plugins.themes.encounters.mastheadTaglineFr"
-msgstr "Subtítulo de la revista en la cabecera — Francés"
+msgstr "Subtítulo de la cabecera — Francés"
 
 msgid "plugins.themes.encounters.primaryMenu"
 msgstr "Navegación principal"

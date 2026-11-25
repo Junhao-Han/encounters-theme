@@ -16,7 +16,13 @@ msgid "plugins.themes.encounters.description"
 msgstr "A standalone theme for the Encounters journal."
 
 msgid "plugins.themes.encounters.mastheadTitle"
-msgstr "Short journal name in the header"
+msgstr "Header title — English"
+
+msgid "plugins.themes.encounters.mastheadTitleEs"
+msgstr "Header title — Spanish"
+
+msgid "plugins.themes.encounters.mastheadTitleFr"
+msgstr "Header title — French"
 
 msgid "plugins.themes.encounters.mastheadLogo"
 msgstr "Header logo"
@@ -43,13 +49,13 @@ msgid "plugins.themes.encounters.sidebar.show"
 msgstr "Show OJS sidebar"
 
 msgid "plugins.themes.encounters.mastheadTagline"
-msgstr "Journal subtitle in the header — English"
+msgstr "Header subtitle — English"
 
 msgid "plugins.themes.encounters.mastheadTaglineEs"
-msgstr "Journal subtitle in the header — Spanish"
+msgstr "Header subtitle — Spanish"
 
 msgid "plugins.themes.encounters.mastheadTaglineFr"
-msgstr "Journal subtitle in the header — French"
+msgstr "Header subtitle — French"
 
 msgid "plugins.themes.encounters.aboutMenu"
 msgstr "About submenu"

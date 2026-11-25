@@ -42,7 +42,7 @@
                                 <img class="encounters-brand-mark" src="{$encountersThemeUrl|escape}/images/encounters-logo.png?v=2" width="496" height="353" alt="">
                             {/if}
                             <span class="encounters-brand-copy">
-                                <span class="encounters-brand-title">{$activeTheme->getOption('mastheadTitle')|default:$displayPageHeaderTitle|escape}</span>
+                                <span class="encounters-brand-title">{$activeTheme->getMastheadTitle($currentLocale)|default:$displayPageHeaderTitle|escape}</span>
                                 {assign var=mastheadTagline value=$activeTheme->getMastheadTagline($currentLocale)}
                                 {if $mastheadTagline}
                                     <span class="encounters-tagline">{$mastheadTagline|escape}</span>

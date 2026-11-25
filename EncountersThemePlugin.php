@@ -44,6 +44,14 @@ class EncountersThemePlugin extends ThemePlugin
             'label' => __('plugins.themes.encounters.mastheadTitle'),
             'default' => 'Encounters',
         ]);
+        $this->addOption('mastheadTitleEs', 'FieldText', [
+            'label' => __('plugins.themes.encounters.mastheadTitleEs'),
+            'default' => 'Encuentros',
+        ]);
+        $this->addOption('mastheadTitleFr', 'FieldText', [
+            'label' => __('plugins.themes.encounters.mastheadTitleFr'),
+            'default' => 'Rencontres',
+        ]);
         $this->addOption('mastheadTagline', 'FieldText', [
             'label' => __('plugins.themes.encounters.mastheadTagline'),
             'default' => 'In Education, Humanities, and Technology',
@@ -199,6 +207,16 @@ class EncountersThemePlugin extends ThemePlugin
             $args[2] .= $templateManager->fetch($this->getTemplateResource('submission/branding.tpl'));
         }
         return Hook::CONTINUE;
+    }
+
+    public function getMastheadTitle(string $locale): string
+    {
+        $option = match (strtolower(substr($locale, 0, 2))) {
+            'es' => 'mastheadTitleEs',
+            'fr' => 'mastheadTitleFr',
+            default => 'mastheadTitle',
+        };
+        return trim((string) $this->getOption($option));
     }
 
     public function getMastheadTagline(string $locale): string

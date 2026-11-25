@@ -179,6 +179,8 @@ class FixtureTheme extends \APP\plugins\themes\encounters\EncountersThemePlugin
         if ($name === 'aboutMenu') return $this->aboutMenu;
         return $this->overrides[$name] ?? match ($name) {
             'mastheadTitle' => 'Encounters',
+            'mastheadTitleEs' => 'Encuentros',
+            'mastheadTitleFr' => 'Rencontres',
             'mastheadTagline' => 'Education & Humanities',
             'mastheadTaglineEs' => 'Educación <Humanidades>',
             'mastheadTaglineFr' => 'Éducation & Humanités',
@@ -433,11 +435,25 @@ try {
     }
     $smarty->assign(['displayPageHeaderLogo' => null, 'activeTheme' => new FixtureTheme()]);
 
-    foreach (['en' => 'Education &amp; Humanities', 'es' => 'Educación &lt;Humanidades&gt;', 'fr' => 'Éducation &amp; Humanités', 'es_MX' => 'Educación &lt;Humanidades&gt;', 'fr-CA' => 'Éducation &amp; Humanités', 'de' => 'Education &amp; Humanities'] as $locale => $tagline) {
+    $mastheadTitles = ['en' => 'Encounters', 'es' => 'Encuentros', 'fr' => 'Rencontres', 'es_MX' => 'Encuentros', 'fr_CA' => 'Rencontres', 'fr-CA' => 'Rencontres', 'de' => 'Encounters'];
+    foreach (['en' => 'Education &amp; Humanities', 'es' => 'Educación &lt;Humanidades&gt;', 'fr' => 'Éducation &amp; Humanités', 'es_MX' => 'Educación &lt;Humanidades&gt;', 'fr_CA' => 'Éducation &amp; Humanités', 'fr-CA' => 'Éducation &amp; Humanités', 'de' => 'Education &amp; Humanities'] as $locale => $tagline) {
         $smarty->assign(['currentLocale' => $locale, 'requestedPage' => 'about']);
         $header = $smarty->fetch('frontend/components/header.tpl');
+        check(str_contains($header, '<span class="encounters-brand-title">' . $mastheadTitles[$locale] . '</span>'), 'Header title does not follow the subtitle language: ' . $locale);
         check(str_contains($header, '<span class="encounters-tagline">' . $tagline . '</span>'), 'Header subtitle does not follow the locale or is not escaped: ' . $locale);
+        $submissionBrand = $smarty->fetch('submission/branding.tpl');
+        check(str_contains($submissionBrand, '<span class="encounters-submission-brand__title">' . $mastheadTitles[$locale] . '</span>'), 'Submission title does not follow the locale: ' . $locale);
+        check(str_contains($submissionBrand, '<span class="encounters-submission-brand__tagline">' . $tagline . '</span>'), 'Submission subtitle does not follow the locale: ' . $locale);
     }
+    $smarty->assign('activeTheme', new FixtureTheme(overrides: ['mastheadTitle' => 'Existing & <Journal>', 'mastheadTitleEs' => 'Revista & <Educación>', 'mastheadTitleFr' => 'Revue & <Éducation>']));
+    foreach (['en' => 'Existing &amp; &lt;Journal&gt;', 'es' => 'Revista &amp; &lt;Educación&gt;', 'fr' => 'Revue &amp; &lt;Éducation&gt;', 'fr_CA' => 'Revue &amp; &lt;Éducation&gt;'] as $locale => $title) {
+        $smarty->assign('currentLocale', $locale);
+        check(str_contains($smarty->fetch('frontend/components/header.tpl'), 'class="encounters-brand-title">' . $title . '</span>'), 'Saved header title is lost or unescaped: ' . $locale);
+        check(str_contains($smarty->fetch('submission/branding.tpl'), 'class="encounters-submission-brand__title">' . $title . '</span>'), 'Saved submission title is lost or unescaped: ' . $locale);
+    }
+    $smarty->assign('activeTheme', new FixtureTheme(overrides: ['mastheadTitleFr' => '']));
+    check(str_contains($smarty->fetch('frontend/components/header.tpl'), 'class="encounters-brand-title">Encounters &amp; Education</span>'), 'Empty header title does not fall back to the journal name');
+    check(str_contains($smarty->fetch('submission/branding.tpl'), 'class="encounters-submission-brand__title">Encounters &amp; Education</span>'), 'Empty submission title does not fall back to the journal name');
     $smarty->assign(['activeTheme' => new FixtureTheme(overrides: ['mastheadTaglineFr' => '']), 'currentLocale' => 'fr']);
     check(!str_contains($smarty->fetch('frontend/components/header.tpl'), 'class="encounters-tagline"'), 'Empty subtitle falls back to another language');
     $smarty->assign(['activeTheme' => new FixtureTheme(), 'currentLocale' => 'en', 'requestedPage' => 'index']);
