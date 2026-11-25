@@ -112,3 +112,14 @@
 @import "header.less";
 @import "home.less";
 @import "hero.less";
+
+@media screen and (min-width: 1024px) {
+    body.encounters_theme {
+        zoom: 1.1;
+
+        // Keep fixed-width OJS content inside the enlarged viewport.
+        .pkp_structure_content { max-width: ~"calc(100% - 32px)"; }
+        .pkp_structure_main { max-width: 100%; }
+        .has_sidebar .pkp_structure_main { width: ~"calc(100% - @{sidebar-width})"; }
+    }
+}
