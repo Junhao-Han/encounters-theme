@@ -13,7 +13,7 @@ msgid "plugins.themes.encounters.submissionRequirement"
 msgstr "Requisito {$number}"
 
 msgid "plugins.themes.encounters.description"
-msgstr "Un tema independiente para la revista Encounters."
+msgstr "Un tema diseñado para la revista Encuentros en Educación, Humanidades y Tecnología."
 
 msgid "plugins.themes.encounters.mastheadTitle"
 msgstr "Título de la cabecera — Inglés"
